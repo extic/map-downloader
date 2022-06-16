@@ -1,7 +1,11 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import './samples/node-api'
+import { createApp } from "vue";
+import App from "./App.vue";
+import "./samples/node-api";
+import router from "./router";
+import { createPinia } from "pinia";
 
 createApp(App)
-  .mount('#app')
-  .$nextTick(window.removeLoading)
+  .use(router)
+  .use(createPinia())
+  .mount("#app")
+  .$nextTick(window.removeLoading);

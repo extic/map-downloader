@@ -42,7 +42,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, WritableComputedRef } from "vue";
-import { openDonateDialog } from "./DonateDialog.vue";
 import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { MapType, useMapStore } from "../store/map-store";
@@ -109,7 +108,7 @@ export default defineComponent({
     };
 
     const donate = () => {
-      openDonateDialog();
+      window.open("https://www.paypal.com/donate/?business=R4VGRL3MHAWCY&no_recurring=0&item_name=Maps+Downloader+-+I+welcome+your+support+as+it+takes+some+time+and+effort+continuing+developing+and+maintaining+it.+Thank+you%21&currency_code=ILS");
     };
 
     const mapType: WritableComputedRef<MapType> = computed({

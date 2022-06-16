@@ -20,7 +20,7 @@ let win: BrowserWindow | null = null
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Extremely - Map Downloader - Loading...',
-    icon: join(__dirname, "../../packages/renderer/favicon.png"),
+    icon: join(__dirname, "../../packages/renderer/favicon.ico"),
     width: 1600,
     height: 900,
     webPreferences: {

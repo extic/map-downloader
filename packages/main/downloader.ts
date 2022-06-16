@@ -1,11 +1,9 @@
-import axios, { AxiosError } from "axios";
 import * as pimage from "pureimage";
 import * as fs from "fs";
 import { Readable } from "stream";
 import { BrowserWindow } from "electron";
 import crypto from "crypto";
-
-axios.defaults.adapter = require("axios/lib/adapters/http");
+import fetch from 'electron-fetch'
 
 type DownloadRequest = {
   zoomLevel: string;
@@ -35,8 +33,9 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadRequest) 
 
       const url = getTileUrl(request.zoomLevel, posY, posX, request.mapType);
       try {
-        const response = await axios.get(url, { responseType: "arraybuffer" });
-        const buffer = Buffer.from(response.data, "utf-8");
+        const response = await fetch(url)//, { responseType: "arraybuffer" });
+        const arrayBuffer = await response.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer);
         const img1 = await (request.mapType === "satellite"
           ? pimage.decodeJPEGFromStream(Readable.from(buffer))
           : pimage.decodePNGFromStream(Readable.from(buffer)));
@@ -48,13 +47,13 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadRequest) 
           }
         }
       } catch (error) {
-        if (error instanceof AxiosError && error.response) {
-          if (error.response.status !== 500 && error.response.status !== 503) {
-            console.log(error);
-          }
-        } else {
+        // if (error instanceof AxiosError && error.response) {
+        //   if (error.response.status !== 500 && error.response.status !== 503) {
+        //     console.log(error);
+        //   }
+        // } else {
           console.log(error);
-        }
+        // }
       }
     }
   }

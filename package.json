@@ -41,7 +41,7 @@
     "vite-plugin-resolve": "^2.1.2",
     "vue": "^3.2.36",
     "vue-router": "^4.0.16",
-    "vue-tsc": "^0.35.2"
+    "vue-tsc": "^0.37.9"
   },
   "env": {
     "VITE_DEV_SERVER_HOST": "127.0.0.1",

@@ -35,7 +35,6 @@
       <button @click="download">Download</button>
     </div>
     <div class="right-pane">
-      <button @click="contact">Contact</button>
       <button @click="donate">Donate</button>
     </div>
   </div>
@@ -45,7 +44,6 @@
 import { computed, defineComponent, WritableComputedRef } from "vue";
 import { openDonateDialog } from "./DonateDialog.vue";
 import { isProduction } from "../utils";
-import { openContactDialog } from "./ContactDialog.vue";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { MapType, useMapStore } from "../store/map-store";
 import { ipcRenderer } from "electron";
@@ -108,34 +106,10 @@ export default defineComponent({
         maxY: selectionEnd.y - selectionStart.y + 1,
         mapType: store.mapType,
       });
-      //
-      //
-      // const url = "/api/download"
-      // const response = await axios.get(url, {
-      //     params: {
-      //         "zoom": zoomLevel.value,
-      //         "colStart": selectionStart.x.toString(16),
-      //         "rowStart": selectionStart.y.toString(16),
-      //         "colEnd": selectionEnd.x.toString(16),
-      //         "rowEnd": selectionEnd.y.toString(16)
-      //     },
-      //     responseType: 'arraybuffer'
-      // })
-      //
-      // const type = response.headers['content-type']
-      // const blob = new Blob([response.data], {type: type})
-      // const link = document.createElement('a')
-      // link.href = window.URL.createObjectURL(blob)
-      // link.download = 'map.png'
-      // link.click()
     };
 
     const donate = () => {
       openDonateDialog();
-    };
-
-    const contact = async () => {
-      openContactDialog();
     };
 
     const mapType: WritableComputedRef<MapType> = computed({
@@ -148,7 +122,7 @@ export default defineComponent({
       },
     });
 
-    return { zoomLevel, scale, selectionStart, selectionEnd, selectedTiles, download, contact, donate, mapType };
+    return { zoomLevel, scale, selectionStart, selectionEnd, selectedTiles, download, donate, mapType };
   },
 
   mounted() {

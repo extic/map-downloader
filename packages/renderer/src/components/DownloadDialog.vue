@@ -52,7 +52,7 @@ export default defineComponent({
     const timeoutId = ref(0);
     const progress = ref(0);
     const genericDialog = ref("genericDialog");
-    const error = ref(true);
+    const error = ref(false);
 
     const dialogAppeared = () => {
       //do nothing

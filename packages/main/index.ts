@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell,ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+import { utils } from "./test";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -18,7 +19,10 @@ let win: BrowserWindow | null = null
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: 'Extremely - Map Downloader - Loading...',
+    icon: join(__dirname, "../../packages/renderer/favicon.png"),
+    width: 1600,
+    height: 900,
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs'),
       nodeIntegration: true,
@@ -46,6 +50,8 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+
+  utils.aaa(win);
 }
 
 app.whenReady().then(createWindow)

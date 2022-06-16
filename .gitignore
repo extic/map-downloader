@@ -4,6 +4,7 @@ dist
 dist-ssr
 *.local
 .debug.env
+map-*.png
 
 tmp
 **/.tmp

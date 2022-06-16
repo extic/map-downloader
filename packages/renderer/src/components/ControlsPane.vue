@@ -98,7 +98,7 @@ export default defineComponent({
       });
 
       ipcRenderer.send("download-map", {
-        zoomLevel: zoomLevel.value.toString().padStart(2, '0'),
+        zoomLevel: zoomLevel.value.toString().padStart(2, "0"),
         startX: selectionStart.x,
         startY: selectionStart.y,
         maxX: selectionEnd.x - selectionStart.x + 1,
@@ -108,7 +108,9 @@ export default defineComponent({
     };
 
     const donate = () => {
-      window.open("https://www.paypal.com/donate/?business=R4VGRL3MHAWCY&no_recurring=0&item_name=Maps+Downloader+-+I+welcome+your+support+as+it+takes+some+time+and+effort+continuing+developing+and+maintaining+it.+Thank+you%21&currency_code=ILS");
+      window.open(
+        "https://www.paypal.com/donate/?business=R4VGRL3MHAWCY&no_recurring=0&item_name=Maps+Downloader+-+I+welcome+your+support+as+it+takes+some+time+and+effort+continuing+developing+and+maintaining+it.+Thank+you%21&currency_code=ILS"
+      );
     };
 
     const mapType: WritableComputedRef<MapType> = computed({
@@ -137,7 +139,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   padding: 1em;
-  color: #333;
+  color: rgb(228, 228, 228);
   width: 100%;
 
   .left-pane {
@@ -162,6 +164,13 @@ export default defineComponent({
     select {
       padding: 0.3em 1em;
       border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      background-color: rgb(228, 228, 228);
+
+      &:hover {
+        background-color: white;
+      }
     }
 
     .vertical {
@@ -173,6 +182,15 @@ export default defineComponent({
 
   button {
     padding: 0.3em 2em;
+    border-radius: 4px;
+    border: 1px solid lightgray;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    background-color: rgb(228, 228, 228);
+
+    &:hover {
+      background-color: white;
+    }
   }
 }
 </style>

@@ -21,7 +21,9 @@ export default defineComponent({
     display: flex;
     align-items: center;
     gap: 2em;
+    border-top: 1px solid black;
     border-bottom: 1px solid black;
+    background-color: #2b669b;
 
     .logo {
         width: 5em;

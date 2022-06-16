@@ -30,6 +30,8 @@ async function createWindow() {
     },
   })
 
+  win.menuBarVisible = false;
+
   if (app.isPackaged) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {

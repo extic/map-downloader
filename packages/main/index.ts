@@ -39,7 +39,9 @@ async function createWindow() {
     const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
 
     win.loadURL(url)
-    // win.webContents.openDevTools()
+    if (process.env.NODE_ENV !== "production") {
+      win.webContents.openDevTools()
+    }
   }
 
   // Test active push message to Renderer-process

@@ -1,4 +1,7 @@
 import { defineStore } from "pinia";
+import { mapDataGisNetGalilTahton } from "../maps/gisnet-galil-tahton.data";
+import { mapDataGovMap } from "../maps/govmap.data";
+import { MapData } from "../maps/map.data";
 
 export interface TileLocation {
   readonly x: number;
@@ -15,26 +18,28 @@ export type MapState = {
   selectionEnd: TileLocation | null;
 };
 
+const startMap = mapDataGisNetGalilTahton;
+
 export const useMapStore = defineStore("song", {
   state: () => ({
+    _selectedMap: startMap,
     _mapType: "satellite" as MapType,
     _zoomLevel: 0,
-    _scale: 0,
     _selectionStart: null as TileLocation | null,
     _selectionEnd: null as TileLocation | null,
   }),
 
   getters: {
+    selectedMap(state): MapData {
+      return state._selectedMap;
+    },
+
     mapType(state): MapType {
       return state._mapType;
     },
 
     zoomLevel(state): number {
       return state._zoomLevel;
-    },
-
-    scale(state): number {
-      return state._scale;
     },
 
     selectionStart(state): TileLocation | null {
@@ -47,16 +52,16 @@ export const useMapStore = defineStore("song", {
   },
 
   actions: {
+    setSelectedMap(selectedMap: MapData): void {
+      this._selectedMap = selectedMap;
+    },
+
     setMapType(mapType: MapType): void {
       this._mapType = mapType;
     },
 
     setZoomLevel(zoomLevel: number): void {
       this._zoomLevel = zoomLevel;
-    },
-
-    setScale(scale: number): void {
-      this._scale = scale;
     },
 
     setSelectionStart(selectionStart: TileLocation | null): void {

@@ -3,8 +3,8 @@
     <div class="left-pane">
       <div class="field">
         <label>Source:</label>
-        <select>
-          <option>GovMap</option>
+        <select v-model="selectedMap">
+          <option v-for="map in allMaps" :value="map">{{ map.name }}</option>
         </select>
       </div>
       <div class="field">
@@ -21,11 +21,11 @@
       </div>
       <div class="field">
         <label>Scale:</label>
-        <div>1:{{ scale }}</div>
+        <div>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</div>
       </div>
       <div class="field">
         <label>Zoom Level:</label>
-        <div>{{ zoomLevel }}</div>
+        <div>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</div>
       </div>
       <div class="field">
         <label>Selected Tiles:</label>
@@ -46,6 +46,7 @@ import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { MapType, useMapStore } from "../store/map-store";
 import { ipcRenderer } from "electron";
+import { MapData, maps } from "../maps/map.data";
 
 export default defineComponent({
   name: "ControlsPane",
@@ -57,16 +58,25 @@ export default defineComponent({
       return store.zoomLevel;
     });
 
-    const scale = computed(() => {
-      return store.scale;
-    });
-
     const selectionStart = computed(() => {
       return store.selectionStart;
     });
 
     const selectionEnd = computed(() => {
       return store.selectionEnd;
+    });
+
+    const selectedMap = computed({
+      get(): MapData {
+        return store.selectedMap;
+      },
+      set(newValue: MapData) {
+        store.setSelectedMap(newValue);
+      },
+    });
+
+    const allMaps = computed(() => {
+      return maps;
     });
 
     const selectedTiles = computed((): number | null => {
@@ -123,7 +133,7 @@ export default defineComponent({
       },
     });
 
-    return { zoomLevel, scale, selectionStart, selectionEnd, selectedTiles, download, donate, mapType };
+    return { zoomLevel, selectionStart, selectionEnd, selectedTiles, download, donate, mapType, allMaps, selectedMap };
   },
 
   mounted() {

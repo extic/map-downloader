@@ -75,7 +75,6 @@ export default defineComponent({
 
     const updateTiles = () => {
       const selectedMap = store.map;
-      console.log(selectedMap.name);
       const zoomLayers = store.map.zoomLayers;
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
@@ -116,7 +115,6 @@ export default defineComponent({
       watch(
         () => [store.map, store.mapType],
         () => {
-          console.log("here");
           instance!.proxy!.$forceUpdate();
         }
       );

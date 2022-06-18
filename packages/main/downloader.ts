@@ -75,6 +75,6 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadRequest) 
 };
 
 const getTileUrl = (map: MapData, zoomLevel: number, row: number, col: number, mapType: string) => {
-  console.log(map.urlProvider(mapType, zoomLevel, row, col));
+  // console.log(map.urlProvider(mapType, zoomLevel, row, col));
   return map.urlProvider(mapType, zoomLevel, row, col);
 }

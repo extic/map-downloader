@@ -67,7 +67,6 @@ export default defineComponent({
     });
 
     ipcRenderer.on("download-done", (event, result: boolean) => {
-      console.log(result);
       progress.value = 1;
       if (result) {
         const genericDialogInstance = genericDialog.value as unknown as typeof GenericDialog;

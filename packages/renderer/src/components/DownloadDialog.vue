@@ -27,7 +27,6 @@
 import { createApp, defineComponent, onMounted, PropType, ref } from "vue";
 import GenericDialog, { createDialogMountingPoint, focusOnModalOnly } from "./GenericDialog.vue";
 import DownloadDialog from "./DownloadDialog.vue";
-import { MapType, useMapStore } from "../store/map-store";
 import { ipcRenderer } from "electron";
 
 export interface DownloadDialogOptions {
@@ -36,7 +35,7 @@ export interface DownloadDialogOptions {
   readonly startY: number;
   readonly maxX: number;
   readonly maxY: number;
-  readonly mapType: MapType;
+  readonly mapType: string;
 }
 
 export default defineComponent({
@@ -84,11 +83,6 @@ export default defineComponent({
       if (this.timeoutId) {
         clearTimeout(this.timeoutId);
       }
-
-      // if (this.uuid !== "0") {
-      //     mapService.clearRequest(this.uuid)
-      // }
-
       const genericDialog = this.$refs.genericDialog as unknown as typeof GenericDialog;
       genericDialog.close();
     },

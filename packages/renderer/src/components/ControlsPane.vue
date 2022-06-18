@@ -9,7 +9,7 @@
       </div>
       <div v-if="selectedMap.supportedMapTypes.length > 1" class="field">
         <div class="vertical">
-          <div v-for="(type, index) in selectedMap.supportedMapTypes" :key="index" class="vertial-item">
+          <div v-for="(type, index) in selectedMap.supportedMapTypes" :key="index" class="vertical-item">
             <input :id="`mapType${index}`" type="radio" :value="type" v-model="mapType" />
             <label :for="`mapType${index}`">{{ type }}</label>
           </div>
@@ -17,12 +17,12 @@
       </div>
       <div class="field">
         <div class="vertical">
-          <div class="vertial-item">
-            <label>Scale:</label>
+          <div class="vertical-item">
+            <label class="field-label">Scale:</label>
             <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
           </div>
-          <div class="vertial-item">
-            <label>Zoom:</label>
+          <div class="vertical-item">
+            <label class="field-label">Zoom:</label>
             <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
           </div>
         </div>
@@ -32,9 +32,9 @@
         <div v-if="selectedTiles">{{ selectedTiles }}</div>
         <div v-else>No Selection Yet</div>
       </div>
-      <button @click="download">Download</button>
     </div>
     <div class="right-pane">
+      <button @click="download">Download</button>
       <button @click="donate">Donate</button>
     </div>
   </div>
@@ -163,14 +163,31 @@ export default defineComponent({
   .right-pane {
     flex-shrink: 0;
     display: flex;
-    align-items: center;
-    gap: 1em;
+    flex-direction: column;
+    align-items: stretch;
+    justify-items: center;
+    gap: 0.5em;
+  }
+
+  .vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3em;
+
+    .vertical-item {
+      white-space: pre;
+    }
   }
 
   .field {
     display: flex;
     align-items: center;
     gap: 0.5em;
+
+    .field-label {
+      margin-right: 0.5em;
+    }
 
     select {
       padding: 0.3em 1em;
@@ -181,17 +198,6 @@ export default defineComponent({
 
       &:hover {
         background-color: white;
-      }
-    }
-
-    .vertical {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.3em;
-
-      .vertial-item {
-        white-space: pre;
       }
     }
   }

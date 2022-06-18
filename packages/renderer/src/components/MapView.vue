@@ -115,6 +115,10 @@ export default defineComponent({
       watch(
         () => [store.map, store.mapType],
         () => {
+          posX = 0;
+          posY = 0;
+          lastPosX = 0;
+          lastPosY = 0;
           instance!.proxy!.$forceUpdate();
         }
       );

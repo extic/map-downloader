@@ -3,29 +3,29 @@
     <div class="left-pane">
       <div class="field">
         <label>Source:</label>
-        <select>
-          <option>GovMap</option>
+        <select v-model="selectedMap">
+          <option v-for="map in allMaps" :value="map">{{ map.name }}</option>
         </select>
       </div>
-      <div class="field">
+      <div v-if="selectedMap.supportedMapTypes.length > 1" class="field">
         <div class="vertical">
-          <div>
-            <input id="mapTypeSatellite" type="radio" value="satellite" v-model="mapType" />
-            <label for="mapTypeSatellite">Satellite</label>
-          </div>
-          <div>
-            <input id="mapTypeBuildings" type="radio" value="buildings" v-model="mapType" />
-            <label for="mapTypeBuildings">Street & Buildings</label>
+          <div v-for="(type, index) in selectedMap.supportedMapTypes" :key="index" class="vertial-item">
+            <input :id="`mapType${index}`" type="radio" :value="type" v-model="mapType" />
+            <label :for="`mapType${index}`">{{ type }}</label>
           </div>
         </div>
       </div>
       <div class="field">
-        <label>Scale:</label>
-        <div>1:{{ scale }}</div>
-      </div>
-      <div class="field">
-        <label>Zoom Level:</label>
-        <div>{{ zoomLevel }}</div>
+        <div class="vertical">
+          <div class="vertial-item">
+            <label>Scale:</label>
+            <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
+          </div>
+          <div class="vertial-item">
+            <label>Zoom:</label>
+            <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
+          </div>
+        </div>
       </div>
       <div class="field">
         <label>Selected Tiles:</label>
@@ -44,8 +44,9 @@
 import { computed, defineComponent, WritableComputedRef } from "vue";
 import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
-import { MapType, useMapStore } from "../store/map-store";
+import { useMapStore } from "../store/map-store";
 import { ipcRenderer } from "electron";
+import { MapData, maps } from "../../../common/maps/map.data";
 
 export default defineComponent({
   name: "ControlsPane",
@@ -57,16 +58,35 @@ export default defineComponent({
       return store.zoomLevel;
     });
 
-    const scale = computed(() => {
-      return store.scale;
-    });
-
     const selectionStart = computed(() => {
       return store.selectionStart;
     });
 
     const selectionEnd = computed(() => {
       return store.selectionEnd;
+    });
+
+    const selectedMap = computed({
+      get(): MapData {
+        return store.map;
+      },
+      set(newValue: MapData) {
+        store.setMap(newValue);
+      },
+    });
+
+    const mapType = computed({
+      get(): string {
+        return store.mapType;
+      },
+
+      set(mapType: string) {
+        store.setMapType(mapType);
+      },
+    });
+
+    const allMaps = computed(() => {
+      return maps;
     });
 
     const selectedTiles = computed((): number | null => {
@@ -98,11 +118,12 @@ export default defineComponent({
       });
 
       ipcRenderer.send("download-map", {
-        zoomLevel: zoomLevel.value.toString().padStart(2, "0"),
+        zoomLevel: zoomLevel.value,
         startX: selectionStart.x,
         startY: selectionStart.y,
         maxX: selectionEnd.x - selectionStart.x + 1,
         maxY: selectionEnd.y - selectionStart.y + 1,
+        mapName: selectedMap.value.name,
         mapType: store.mapType,
       });
     };
@@ -113,17 +134,7 @@ export default defineComponent({
       );
     };
 
-    const mapType: WritableComputedRef<MapType> = computed({
-      get(): MapType {
-        return store.mapType;
-      },
-
-      set(mapType: MapType) {
-        store.setMapType(mapType);
-      },
-    });
-
-    return { zoomLevel, scale, selectionStart, selectionEnd, selectedTiles, download, donate, mapType };
+    return { zoomLevel, selectionStart, selectionEnd, selectedTiles, download, donate, mapType, allMaps, selectedMap };
   },
 
   mounted() {
@@ -177,6 +188,11 @@ export default defineComponent({
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      gap: 0.3em;
+
+      .vertial-item {
+        white-space: pre;
+      }
     }
   }
 

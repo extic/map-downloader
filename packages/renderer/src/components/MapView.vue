@@ -155,12 +155,7 @@ export default defineComponent({
       const zoomIn = event.deltaY < 0;
       let zoom = zoomLevel.value + (zoomIn ? 1 : -1);
       if (zoom >= 0 && zoom <= selectedMap.value.zoomLayers.length - 1) {
-        let factor = 2;
-        // if ((zoomLevel.value === 0 && zoomIn) || (zoomLevel.value === 1 && !zoomIn)) {
-        //   factor = 3;
-        // } else if (((zoomLevel.value === 3 || zoomLevel.value === 6) && zoomIn) || ((zoomLevel.value === 4 || zoomLevel.value === 7) && !zoomIn)) {
-        //   factor = 2.5;
-        // }
+        const factor = selectedMap.value.zoomFactorProvider(zoomLevel.value, zoomIn)
 
         if (zoomIn) {
           posX *= factor;

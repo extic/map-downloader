@@ -19,6 +19,15 @@ export const mapDataGovMap: MapData = {
     return zoomLevel.toString();
   },
 
+  zoomFactorProvider: (zoomLevel: number, zoomIn: boolean): number => {
+    if ((zoomLevel === 0 && zoomIn) || (zoomLevel === 1 && !zoomIn)) {
+      return 3;
+    } else if (((zoomLevel === 3 || zoomLevel === 6) && zoomIn) || ((zoomLevel === 4 || zoomLevel === 7) && !zoomIn)) {
+      return 2.5;
+    }
+    return 2;
+  },
+
   decode: async (mapType: string, buffer: Buffer): Promise<Bitmap> => {
     return await (mapType === "Satellite"
           ? pimage.decodeJPEGFromStream(Readable.from(buffer))

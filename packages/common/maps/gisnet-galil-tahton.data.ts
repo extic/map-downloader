@@ -15,6 +15,10 @@ export const mapDataGisNetGalilTahton: MapData = {
     return (zoomLevel + 4).toString();
   },
 
+  zoomFactorProvider: (zoomLevel: number, zoomIn: boolean): number => {
+    return 2;
+  },
+
   decode: async (mapType: string, buffer: Buffer): Promise<Bitmap> => {
     return pimage.decodeJPEGFromStream(Readable.from(buffer));
   },

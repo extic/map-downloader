@@ -14,6 +14,7 @@ export type MapData = {
   name: string;
   urlProvider: (mapType: string, zoomLevel: number, row: number, col: number) => string;
   zoomLevelProvider: (zoomLevel: number) => string,
+  zoomFactorProvider: (zoomLevel: number, zoomIn: boolean) => number,
   decode: (mapType: string, buffer: Buffer) => Promise<Bitmap>
   supportedMapTypes: string[],
   zoomLayers: ZoomLayer[];

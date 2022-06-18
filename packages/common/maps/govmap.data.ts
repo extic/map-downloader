@@ -29,7 +29,6 @@ export const mapDataGovMap: MapData = {
 
   zoomLayers: [
     {
-      zoomLevel: 0,
       scale: 3000000,
       centerTileX: 27,
       centerTileY: 31,
@@ -37,7 +36,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 190,
     },
     {
-      zoomLevel: 1,
       scale: 1000000,
       centerTileX: 82,
       centerTileY: 95,
@@ -45,7 +43,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 61,
     },
     {
-      zoomLevel: 2,
       scale: 500000,
       centerTileX: 164,
       centerTileY: 190,
@@ -53,7 +50,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 120,
     },
     {
-      zoomLevel: 3,
       scale: 250000,
       centerTileX: 329,
       centerTileY: 380,
@@ -61,7 +57,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 242,
     },
     {
-      zoomLevel: 4,
       scale: 100000,
       centerTileX: 824,
       centerTileY: 952,
@@ -69,7 +64,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 96,
     },
     {
-      zoomLevel: 5,
       scale: 50000,
       centerTileX: 1648,
       centerTileY: 1904,
@@ -77,7 +71,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 190,
     },
     {
-      zoomLevel: 6,
       scale: 25000,
       centerTileX: 3297,
       centerTileY: 3809,
@@ -85,7 +78,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 119,
     },
     {
-      zoomLevel: 7,
       scale: 10000,
       centerTileX: 8244,
       centerTileY: 9523,
@@ -93,7 +85,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 164,
     },
     {
-      zoomLevel: 8,
       scale: 5000,
       centerTileX: 16488,
       centerTileY: 19047,
@@ -101,7 +92,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 70,
     },
     {
-      zoomLevel: 9,
       scale: 2500,
       centerTileX: 32976,
       centerTileY: 38094,
@@ -109,7 +99,6 @@ export const mapDataGovMap: MapData = {
       centerTileOffsetY: 135,
     },
     {
-      zoomLevel: 10,
       scale: 1250,
       centerTileX: 65952,
       centerTileY: 76189,

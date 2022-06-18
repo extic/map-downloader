@@ -3,7 +3,6 @@ import { mapDataGisNetGalilTahton } from "./gisnet-galil-tahton.data"
 import { mapDataGovMap } from "./govmap.data"
 
 export type ZoomLayer = {
-  readonly zoomLevel: number
   readonly scale: number
   readonly centerTileX: number
   readonly centerTileY: number

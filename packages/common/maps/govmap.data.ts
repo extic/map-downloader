@@ -1,19 +1,32 @@
-import { MapType } from "../store/map-store";
+import * as pimage from "pureimage";
+import { Bitmap } from "pureimage/types/bitmap";
+import { Readable } from "stream";
 import { MapData } from "./map.data";
 
 export const mapDataGovMap: MapData = {
-  name: 'GovMap',
-  urlProvider: (mapType: MapType, zoomLevel: number, row: number, col: number): string => {
+  name: "GovMap",
+
+  urlProvider: (mapType: string, zoomLevel: number, row: number, col: number): string => {
     let zoomLevelStr = zoomLevel.toString(10).padStart(2, "0");
     const rowStr = row.toString(16).padStart(8, "0");
     const colStr = col.toString(16).padStart(8, "0");
-    const mapTypeStr = mapType === 'satellite' ? '020522B0B20R' : 'B0B2309BNTL';
-    const suffix = mapType === 'satellite' ? 'jpg' : 'png';
-    return `https://cdn.govmap.gov.il/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}`
+    const mapTypeStr = mapType === "Satellite" ? "020522B0B20R" : "B0B2309BNTL";
+    const suffix = mapType === "Satellite" ? "jpg" : "png";
+    return `https://cdn.govmap.gov.il/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}`;
   },
+
   zoomLevelProvider: (zoomLevel: number): string => {
     return zoomLevel.toString();
   },
+
+  decode: async (mapType: string, buffer: Buffer): Promise<Bitmap> => {
+    return await (mapType === "Satellite"
+          ? pimage.decodeJPEGFromStream(Readable.from(buffer))
+          : pimage.decodePNGFromStream(Readable.from(buffer)));
+  },
+
+  supportedMapTypes: ["Satellite", "Street & Buildings"],
+
   zoomLayers: [
     {
       zoomLevel: 0,

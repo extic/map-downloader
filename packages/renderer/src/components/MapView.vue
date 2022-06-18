@@ -15,20 +15,14 @@
       class="tile"
       @dblclick="selectTile(tile)"
     >
-      <img
-        :src="tile.url"
-        :class="{ selected: tile.selected }"
-        @error="noTileImage($event)"
-        alt="map tile"
-      />
+      <img :src="tile.url" :class="{ selected: tile.selected }" @error="noTileImage($event)" alt="map tile" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, onBeforeUpdate, onMounted, ref } from "vue";
+import { computed, defineComponent, getCurrentInstance, onBeforeUpdate, onMounted, ref, watch } from "vue";
 import { useMapStore } from "../store/map-store";
-import { mapDataGovMap } from "../maps/govmap.data";
 
 interface TileData {
   readonly left: number;
@@ -46,10 +40,6 @@ export default defineComponent({
   setup() {
     const store = useMapStore();
 
-    const selectedMap = computed(() => {
-      return store.selectedMap;
-    });
-
     const tiles = ref([] as TileData[]);
     const map = ref(null as HTMLDivElement | null);
 
@@ -58,6 +48,14 @@ export default defineComponent({
     let posY = 0;
     let lastPosX = 0;
     let lastPosY = 0;
+
+    const selectedMap = computed(() => {
+      return store.map;
+    });
+
+    const mapType = computed(() => {
+      return store.mapType;
+    });
 
     const zoomLevel = computed(() => {
       return store.zoomLevel;
@@ -76,9 +74,9 @@ export default defineComponent({
     };
 
     const updateTiles = () => {
-      const selectedMap = store.selectedMap;
+      const selectedMap = store.map;
       console.log(selectedMap.name);
-      const zoomLayers = store.selectedMap.zoomLayers;
+      const zoomLayers = store.map.zoomLayers;
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
       const tilesX = Math.ceil(mapWidth / 256) + 2;
@@ -115,9 +113,20 @@ export default defineComponent({
     onMounted(() => {
       updateTiles();
 
-      // const layer = selectedMap.value.zoomLayers[zoomLevel.value];
-      // store.setZoomLevel(layer.zoomLevel);
-      // store.setScale(layer.scale);
+      watch(
+        () => [store.map, store.mapType],
+        () => {
+          console.log("here");
+          instance!.proxy!.$forceUpdate();
+        }
+      );
+
+      // watch(
+      //   () => [store.map, store.zoomLevel],
+      //   () => {
+      //     instance!.proxy!.$forceUpdate();
+      //   }
+      // );
     });
 
     onBeforeUpdate(() => {
@@ -152,7 +161,7 @@ export default defineComponent({
     const zoom = (event: WheelEvent) => {
       const zoomIn = event.deltaY < 0;
       let zoom = zoomLevel.value + (zoomIn ? 1 : -1);
-      if (zoom >= 0 && zoom <= 10) {
+      if (zoom >= 0 && zoom <= selectedMap.value.zoomLayers.length - 1) {
         let factor = 2;
         if ((zoomLevel.value === 0 && zoomIn) || (zoomLevel.value === 1 && !zoomIn)) {
           factor = 3;
@@ -169,7 +178,6 @@ export default defineComponent({
         }
 
         store.setZoomLevel(zoom);
-        // store.setScale(selectedMap.value.zoomLayers.find((it) => it.zoomLevel === zoom)!.scale);
         store.setSelectionStart(null);
         store.setSelectionEnd(null);
 
@@ -209,10 +217,6 @@ export default defineComponent({
     const noTileImage = (e: any) => {
       e.path[0].classList.add("hidden");
     };
-
-    const mapType = computed(() => {
-      return store.mapType;
-    });
 
     return { tiles, map, dragStart, drag, dragEnd, zoom, selectTile, noTileImage, mapType, selectedMap };
   },

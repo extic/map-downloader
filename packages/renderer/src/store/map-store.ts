@@ -1,62 +1,40 @@
 import { defineStore } from "pinia";
-import { mapDataGisNetGalilTahton } from "../maps/gisnet-galil-tahton.data";
-import { mapDataGovMap } from "../maps/govmap.data";
-import { MapData } from "../maps/map.data";
+import { MapData, maps } from "../../../common/maps/map.data";
 
-export interface TileLocation {
+export type TileLocation = {
   readonly x: number;
   readonly y: number;
 }
 
-export type MapType = "satellite" | "buildings";
+const startMap = maps[0];
 
-export type MapState = {
-  mapType: MapType;
-  zoomLevel: number;
-  scale: number;
-  selectionStart: TileLocation | null;
-  selectionEnd: TileLocation | null;
-};
-
-const startMap = mapDataGisNetGalilTahton;
-
-export const useMapStore = defineStore("song", {
+export const useMapStore = defineStore("map", {
   state: () => ({
-    _selectedMap: startMap,
-    _mapType: "satellite" as MapType,
+    _map: startMap,
+    _mapType: startMap.supportedMapTypes[0],
     _zoomLevel: 0,
     _selectionStart: null as TileLocation | null,
     _selectionEnd: null as TileLocation | null,
   }),
 
   getters: {
-    selectedMap(state): MapData {
-      return state._selectedMap;
-    },
-
-    mapType(state): MapType {
-      return state._mapType;
-    },
-
-    zoomLevel(state): number {
-      return state._zoomLevel;
-    },
-
-    selectionStart(state): TileLocation | null {
-      return state._selectionStart;
-    },
-
-    selectionEnd(state): TileLocation | null {
-      return state._selectionEnd;
-    },
+    map: (state): MapData => state._map,
+    mapType: (state): string => state._mapType,
+    zoomLevel: (state): number => state._zoomLevel,
+    selectionStart: (state): TileLocation | null => state._selectionStart,
+    selectionEnd: (state): TileLocation | null => state._selectionEnd,
   },
 
   actions: {
-    setSelectedMap(selectedMap: MapData): void {
-      this._selectedMap = selectedMap;
+    setMap(map: MapData): void {
+      this._map = map;
+      this._mapType = map.supportedMapTypes[0];
+      this._zoomLevel = 0;
+      this._selectionStart = null;
+      this._selectionEnd = null;
     },
 
-    setMapType(mapType: MapType): void {
+    setMapType(mapType: string): void {
       this._mapType = mapType;
     },
 

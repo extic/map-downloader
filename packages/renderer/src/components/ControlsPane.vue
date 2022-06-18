@@ -7,25 +7,25 @@
           <option v-for="map in allMaps" :value="map">{{ map.name }}</option>
         </select>
       </div>
-      <div class="field">
+      <div v-if="selectedMap.supportedMapTypes.length > 1" class="field">
         <div class="vertical">
-          <div>
-            <input id="mapTypeSatellite" type="radio" value="satellite" v-model="mapType" />
-            <label for="mapTypeSatellite">Satellite</label>
-          </div>
-          <div>
-            <input id="mapTypeBuildings" type="radio" value="buildings" v-model="mapType" />
-            <label for="mapTypeBuildings">Street & Buildings</label>
+          <div v-for="(type, index) in selectedMap.supportedMapTypes" :key="index" class="vertial-item">
+            <input :id="`mapType${index}`" type="radio" :value="type" v-model="mapType" />
+            <label :for="`mapType${index}`">{{ type }}</label>
           </div>
         </div>
       </div>
       <div class="field">
-        <label>Scale:</label>
-        <div>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</div>
-      </div>
-      <div class="field">
-        <label>Zoom Level:</label>
-        <div>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</div>
+        <div class="vertical">
+          <div class="vertial-item">
+            <label>Scale:</label>
+            <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
+          </div>
+          <div class="vertial-item">
+            <label>Zoom:</label>
+            <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
+          </div>
+        </div>
       </div>
       <div class="field">
         <label>Selected Tiles:</label>
@@ -44,9 +44,9 @@
 import { computed, defineComponent, WritableComputedRef } from "vue";
 import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
-import { MapType, useMapStore } from "../store/map-store";
+import { useMapStore } from "../store/map-store";
 import { ipcRenderer } from "electron";
-import { MapData, maps } from "../maps/map.data";
+import { MapData, maps } from "../../../common/maps/map.data";
 
 export default defineComponent({
   name: "ControlsPane",
@@ -68,10 +68,20 @@ export default defineComponent({
 
     const selectedMap = computed({
       get(): MapData {
-        return store.selectedMap;
+        return store.map;
       },
       set(newValue: MapData) {
-        store.setSelectedMap(newValue);
+        store.setMap(newValue);
+      },
+    });
+
+    const mapType = computed({
+      get(): string {
+        return store.mapType;
+      },
+
+      set(mapType: string) {
+        store.setMapType(mapType);
       },
     });
 
@@ -108,11 +118,12 @@ export default defineComponent({
       });
 
       ipcRenderer.send("download-map", {
-        zoomLevel: zoomLevel.value.toString().padStart(2, "0"),
+        zoomLevel: zoomLevel.value,
         startX: selectionStart.x,
         startY: selectionStart.y,
         maxX: selectionEnd.x - selectionStart.x + 1,
         maxY: selectionEnd.y - selectionStart.y + 1,
+        mapName: selectedMap.value.name,
         mapType: store.mapType,
       });
     };
@@ -122,16 +133,6 @@ export default defineComponent({
         "https://www.paypal.com/donate/?business=R4VGRL3MHAWCY&no_recurring=0&item_name=Maps+Downloader+-+I+welcome+your+support+as+it+takes+some+time+and+effort+continuing+developing+and+maintaining+it.+Thank+you%21&currency_code=ILS"
       );
     };
-
-    const mapType: WritableComputedRef<MapType> = computed({
-      get(): MapType {
-        return store.mapType;
-      },
-
-      set(mapType: MapType) {
-        store.setMapType(mapType);
-      },
-    });
 
     return { zoomLevel, selectionStart, selectionEnd, selectedTiles, download, donate, mapType, allMaps, selectedMap };
   },
@@ -187,6 +188,11 @@ export default defineComponent({
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      gap: 0.3em;
+
+      .vertial-item {
+        white-space: pre;
+      }
     }
   }
 

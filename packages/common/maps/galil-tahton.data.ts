@@ -4,7 +4,7 @@ import { Readable } from "stream";
 import { MapData } from "./map.data";
 
 export const mapDataGisNetGalilTahton: MapData = {
-  name: "GISNET - Galil Tahton",
+  name: "Galil Tahton",
 
   urlProvider: (mapType: string, zoomLevel: number, row: number, col: number): string => {
     const zoomLevelStr = (zoomLevel + 4).toString();

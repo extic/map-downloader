@@ -6,7 +6,7 @@ export type TileLocation = {
   readonly y: number;
 }
 
-const startMap = maps[1];
+const startMap = maps[0];
 
 export const useMapStore = defineStore("map", {
   state: () => ({

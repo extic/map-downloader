@@ -1,6 +1,7 @@
 import { Bitmap } from "pureimage/types/bitmap"
-import { mapDataTelAviv } from "./tel-aviv"
-import { mapDataGisNetGalilTahton } from "./galil-tahton.data"
+import { mapDataTelAviv } from "./tel-aviv.data"
+import { mapDataGalilTahton } from "./galil-tahton.data"
+import { mapDataHaifa } from "./haifa.data"
 import { mapDataGovMap } from "./govmap.data"
 
 export type ZoomLayer = {
@@ -23,6 +24,7 @@ export type MapData = {
 
 export const maps = [
   mapDataGovMap,
-  mapDataGisNetGalilTahton,
+  mapDataGalilTahton,
+  mapDataHaifa,
   mapDataTelAviv,
 ]

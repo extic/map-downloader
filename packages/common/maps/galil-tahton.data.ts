@@ -3,7 +3,7 @@ import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
 import { MapData } from "./map.data";
 
-export const mapDataGisNetGalilTahton: MapData = {
+export const mapDataGalilTahton: MapData = {
   name: "Galil Tahton",
 
   urlProvider: (mapType: string, zoomLevel: number, row: number, col: number): string => {

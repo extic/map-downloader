@@ -10,8 +10,6 @@ export const mapDataTelAviv: MapData = {
     let zoomLevelStr = zoomLevel + 13;
     const rowStr = row.toString(10);
     const colStr = col.toString(10);
-    const mapTypeStr = mapType === "Satellite" ? "020522B0B20R" : "B0B2309BNTL";
-    const suffix = mapType === "Satellite" ? "jpg" : "png";
     return `https://gisn.tel-aviv.gov.il/arcgis/rest/services/WM/IView2Ortho2021WM/MapServer/tile/${zoomLevelStr}/${rowStr}/${colStr}?blankTile=false`
   },
 

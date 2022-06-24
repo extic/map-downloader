@@ -13,29 +13,31 @@
       :key="tile.top * 100000 + tile.left"
       :style="{ left: tile.left + 'px', top: tile.top + 'px' }"
       class="tile"
-      @dblclick="selectTile(tile)"
     >
-      <img :src="tile.url" :class="{ selected: tile.selected }" @error="noTileImage($event)" alt="map tile" />
+      <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
     </div>
+    <crop-area/>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, getCurrentInstance, onBeforeUpdate, onMounted, ref, watch } from "vue";
 import { useMapStore } from "../store/map-store";
+import CropArea from "./CropArea.vue";
 
 interface TileData {
   readonly left: number;
   readonly top: number;
   readonly url: string;
   readonly urlPart: string;
-  readonly selected: boolean;
   readonly row: number;
   readonly col: number;
 }
 
 export default defineComponent({
   name: "MapView",
+
+  components: { CropArea },
 
   setup() {
     const store = useMapStore();
@@ -61,13 +63,13 @@ export default defineComponent({
       return store.zoomLevel;
     });
 
-    const selectedStart = computed(() => {
-      return store.selectionStart;
-    });
+    // const selectedStart = computed(() => {
+    //   return store.selectionStart;
+    // });
 
-    const selectedEnd = computed(() => {
-      return store.selectionEnd;
-    });
+    // const selectedEnd = computed(() => {
+    //   return store.selectionEnd;
+    // });
 
     const mod = (n: number, m: number): number => {
       return ((n % m) + m) % m;
@@ -95,16 +97,9 @@ export default defineComponent({
           const col = layer.centerTileX + Math.floor(posX / 256) - Math.floor(tilesX / 2) + i;
           const colStr = col.toString(16).padStart(8, "0");
           const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX;
-          const selected =
-            selectedStart.value !== null &&
-            selectedEnd.value !== null &&
-            col >= selectedStart.value.x &&
-            col <= selectedEnd.value.x &&
-            row >= selectedStart.value.y &&
-            row <= selectedEnd.value.y;
           let urlPart = `L${zoomLevelStr}/R${rowStr}/C${colStr}`;
           const url = selectedMap.urlProvider(mapType.value, zoomLevel.value, row, col);
-          tiles.value.push({ left, top, url, urlPart, selected, row, col });
+          tiles.value.push({ left, top, url, urlPart, row, col });
         }
       }
     };
@@ -175,40 +170,40 @@ export default defineComponent({
       }
     };
 
-    const selectTile = (tile: TileData) => {
-      if (selectedStart.value === null) {
-        store.setSelectionStart({ x: tile.col, y: tile.row });
-        store.setSelectionEnd({ x: tile.col, y: tile.row });
-      } else if (selectedStart.value.x === tile.col && selectedStart.value.y === tile.row) {
-        store.setSelectionStart(selectedEnd.value);
-        store.setSelectionEnd(null);
-      } else if (selectedEnd.value === null || !(selectedEnd.value.x === tile.col && selectedEnd.value.y === tile.row)) {
-        store.setSelectionEnd({ x: tile.col, y: tile.row });
-      } else {
-        store.setSelectionEnd(null);
-      }
+    // const selectTile = (tile: TileData) => {
+    //   if (selectedStart.value === null) {
+    //     store.setSelectionStart({ x: tile.col, y: tile.row });
+    //     store.setSelectionEnd({ x: tile.col, y: tile.row });
+    //   } else if (selectedStart.value.x === tile.col && selectedStart.value.y === tile.row) {
+    //     store.setSelectionStart(selectedEnd.value);
+    //     store.setSelectionEnd(null);
+    //   } else if (selectedEnd.value === null || !(selectedEnd.value.x === tile.col && selectedEnd.value.y === tile.row)) {
+    //     store.setSelectionEnd({ x: tile.col, y: tile.row });
+    //   } else {
+    //     store.setSelectionEnd(null);
+    //   }
 
-      if (selectedStart.value !== null && selectedEnd.value != null) {
-        if (selectedStart.value.x > selectedEnd.value.x) {
-          const temp = selectedStart.value.x;
-          store.setSelectionStart({ x: selectedEnd.value.x, y: selectedStart.value.y });
-          store.setSelectionEnd({ x: temp, y: selectedEnd.value.y });
-        }
-        if (selectedStart.value.y > selectedEnd.value.y) {
-          const temp = selectedStart.value.y;
-          store.setSelectionStart({ x: selectedStart.value.x, y: selectedEnd.value.y });
-          store.setSelectionEnd({ x: selectedEnd.value.x, y: temp });
-        }
-      }
+    //   if (selectedStart.value !== null && selectedEnd.value != null) {
+    //     if (selectedStart.value.x > selectedEnd.value.x) {
+    //       const temp = selectedStart.value.x;
+    //       store.setSelectionStart({ x: selectedEnd.value.x, y: selectedStart.value.y });
+    //       store.setSelectionEnd({ x: temp, y: selectedEnd.value.y });
+    //     }
+    //     if (selectedStart.value.y > selectedEnd.value.y) {
+    //       const temp = selectedStart.value.y;
+    //       store.setSelectionStart({ x: selectedStart.value.x, y: selectedEnd.value.y });
+    //       store.setSelectionEnd({ x: selectedEnd.value.x, y: temp });
+    //     }
+    //   }
 
-      instance!.proxy!.$forceUpdate();
-    };
+    //   instance!.proxy!.$forceUpdate();
+    // };
 
     const noTileImage = (e: any) => {
       e.path[0].classList.add("hidden");
     };
 
-    return { tiles, map, dragStart, drag, dragEnd, zoom, selectTile, noTileImage, mapType, selectedMap };
+    return { tiles, map, dragStart, drag, dragEnd, zoom, noTileImage, mapType, selectedMap };
   },
 });
 </script>
@@ -223,26 +218,26 @@ export default defineComponent({
     width: 256px;
     height: 256px;
     box-sizing: content-box;
-    opacity: 0.8;
+    // opacity: 0.8;
 
     &:hover {
-      opacity: 1;
+      // opacity: 1;
       //border: 1px solid red;
     }
 
     & > img {
-      opacity: 0.5;
-      filter: grayscale(1);
+      // opacity: 0.5;
+      // filter: grayscale(1);
 
       &.hidden {
         visibility: hidden;
       }
     }
 
-    & > img.selected {
-      opacity: 1;
-      filter: grayscale(0);
-    }
+    // & > img.selected {
+    //   opacity: 1;
+    //   filter: grayscale(0);
+    // }
   }
 }
 </style>

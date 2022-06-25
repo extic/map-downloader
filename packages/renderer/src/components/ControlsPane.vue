@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, WritableComputedRef } from "vue";
+import { computed, defineComponent, watch } from "vue";
 import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { useMapStore } from "../store/map-store";
@@ -100,32 +100,30 @@ export default defineComponent({
       return (selectionEnd.x - selectionStart.x + 1) * (selectionEnd.y - selectionStart.y + 1);
     });
 
-    const download = async () => {
-      const selectionStart = store.selectionStart;
-      const selectionEnd = store.selectionEnd;
-
-      if (selectionStart === null || selectionEnd === null) {
-        return;
+    watch(
+      () => [store.downloadData],
+      ([downloadData]) => {
+        console.log("cropLeft, posLeft, data", store.cropLeft, store.posLeft, downloadData.endY);
       }
+    );
 
-      openDownloadDialog({
-        zoomLevel: zoomLevel.value,
-        startX: selectionStart.x,
-        startY: selectionStart.y,
-        maxX: selectionEnd.x,
-        maxY: selectionEnd.y,
-        mapType: store.mapType,
-      });
-
+    const download = async () => {
+      openDownloadDialog();
       ipcRenderer.send("download-map", {
-        zoomLevel: zoomLevel.value,
-        startX: selectionStart.x,
-        startY: selectionStart.y,
-        maxX: selectionEnd.x - selectionStart.x + 1,
-        maxY: selectionEnd.y - selectionStart.y + 1,
-        mapName: selectedMap.value.name,
-        mapType: store.mapType,
+        zoomLevel: store.downloadData.zoomLevel,
+        startRow: store.downloadData.startRow,
+        startCol: store.downloadData.startCol,
+        endRow: store.downloadData.endRow,
+        endCol: store.downloadData.endCol,
+        startX: store.downloadData.startX,
+        startY: store.downloadData.startY,
+        endX: store.downloadData.endX,
+        endY: store.downloadData.endY,
+        mapName: store.downloadData.mapName,
+        mapType: store.downloadData.mapType,
       });
+
+      store.downloadData;
     };
 
     const donate = () => {

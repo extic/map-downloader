@@ -1,5 +1,8 @@
 <template>
-  <div class="crop-area" :style="{ left: store.cropLeft + 'px', top: store.cropTop + 'px', width: store.cropWidth + 'px', height: store.cropHeight + 'px' }">
+  <div
+    class="crop-area"
+    :style="{ left: store.cropLeft + 'px', top: store.cropTop + 'px', width: store.cropWidth + 'px', height: store.cropHeight + 'px' }"
+  >
     <div class="handle top-left" v-draggable:nw="dragged"></div>
     <div class="handle top-right" v-draggable:ne="dragged"></div>
     <div class="handle bottom-right" v-draggable:se="dragged"></div>
@@ -72,7 +75,7 @@ export default defineComponent({
       }
     };
 
-    return { dragged, store }
+    return { dragged, store };
   },
 });
 </script>
@@ -82,10 +85,7 @@ export default defineComponent({
   display: inline-block;
   border: 2px dashed lightblue;
   position: absolute;
-  width: 300px;
-  height: 300px;
-  top: 300px;
-  left: 300px;
+  box-sizing: border-box;
   cursor: move;
   background-color: rgba(0, 0, 0, 0.3);
 

@@ -1,17 +1,31 @@
 import { defineStore } from "pinia";
 import { MapData, maps } from "../../../common/maps/map.data";
+import { DownloadData } from "../../../common/download";
 
 export type TileLocation = {
   readonly x: number;
   readonly y: number;
 }
 
-const startMap = maps[0];
+const resetDownloadData = (): DownloadData => ({
+  zoomLevel: 0,
+  startRow: 0,
+  startCol: 0,
+  endRow: 0,
+  endCol: 0,
+  startX: 0,
+  startY: 0,
+  endX: 0,
+  endY: 0,
+  mapName: '',
+  mapType: '',
+});
+
 
 export const useMapStore = defineStore("map", {
   state: () => ({
-    _map: startMap,
-    _mapType: startMap.supportedMapTypes[0],
+    _map: maps[0],
+    _mapType: maps[0].supportedMapTypes[0],
     _zoomLevel: 0,
     _posLeft: 0,
     _posTop: 0,
@@ -19,6 +33,7 @@ export const useMapStore = defineStore("map", {
     _cropTop: 0,
     _cropWidth: 0,
     _cropHeight: 0,
+    _downloadData: resetDownloadData() as DownloadData,
     _selectionStart: null as TileLocation | null,
     _selectionEnd: null as TileLocation | null,
   }),
@@ -33,6 +48,7 @@ export const useMapStore = defineStore("map", {
     cropTop: (state): number => state._cropTop,
     cropWidth: (state): number => state._cropWidth,
     cropHeight: (state): number => state._cropHeight,
+    downloadData: (state): DownloadData => state._downloadData,
     selectionStart: (state): TileLocation | null => state._selectionStart,
     selectionEnd: (state): TileLocation | null => state._selectionEnd,
   },
@@ -42,10 +58,11 @@ export const useMapStore = defineStore("map", {
       this._map = map;
       this._mapType = map.supportedMapTypes[0];
       this._zoomLevel = 0;
-      this._cropLeft = window.innerWidth / 2 - 150;
-      this._cropTop = window.innerHeight / 2 - 150;
+      this._cropLeft = Math.floor(window.innerWidth / 2);
+      this._cropTop = Math.floor(window.innerHeight / 2 - 50);
       this._cropWidth = 300;
       this._cropHeight = 300;
+      this._downloadData = resetDownloadData();
       this._selectionStart = null;
       this._selectionEnd = null;
     },
@@ -80,6 +97,10 @@ export const useMapStore = defineStore("map", {
 
     setCropHeight(cropHeight: number): void {
       this._cropHeight = cropHeight;
+    },
+
+    setDownloadData(downloadData: DownloadData): void {
+      this._downloadData = downloadData;
     },
 
     setSelectionStart(selectionStart: TileLocation | null): void {

@@ -2,6 +2,7 @@
   <div ref="map" class="map-view" v-draggable="dragged" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
       <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
+      <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div>
     </div>
     <crop-area />
   </div>
@@ -50,12 +51,12 @@ export default defineComponent({
     const updateTiles = () => {
       const selectedMap = store.map;
       const zoomLayers = store.map.zoomLayers;
+      const layer = zoomLayers[zoomLevel.value];
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
       const tilesX = Math.ceil(mapWidth / 256) + 2;
       const tilesY = Math.ceil(mapHeight / 256) + 2;
 
-      const layer = zoomLayers[zoomLevel.value];
 
       const modPosX = mod(store.posLeft, 256);
       const modPosY = mod(store.posTop, 256);
@@ -84,17 +85,49 @@ export default defineComponent({
           instance!.proxy!.$forceUpdate();
         }
       );
+
+      watch(
+        () => [store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight],
+        () => { updateDownloadData() }
+      )
     });
 
     onBeforeUpdate(() => {
-      console.log("posX", store.posLeft);
       updateTiles();
     });
 
     const dragged = (deltaX: number, deltaY: number, handle: string) => {
       store.setPosLeft(store.posLeft - deltaX);
       store.setPosTop(store.posTop - deltaY);
+      updateDownloadData();
       instance!.proxy!.$forceUpdate();
+    }
+
+    const updateDownloadData = () => {
+      const selectedMap = store.map;
+      const zoomLayers = store.map.zoomLayers;
+      const layer = zoomLayers[zoomLevel.value];
+      const mapWidth = map.value!.clientWidth;
+      const mapHeight = map.value!.clientHeight;
+      const tilesX = Math.ceil(mapWidth / 256) + 2;
+      const tilesY = Math.ceil(mapHeight / 256) + 2;
+
+      const startX = store.cropLeft + store.posLeft - Math.floor(mapWidth / 2) + layer.centerTileOffsetX;
+      const startY = store.cropTop + store.posTop - Math.floor(mapHeight / 2) + layer.centerTileOffsetY;
+
+      store.setDownloadData({
+        zoomLevel: store.zoomLevel,
+        startCol: Math.floor(startX / 256) + layer.centerTileX,
+        startRow: Math.floor(startY / 256) + layer.centerTileY,
+        endCol: Math.floor((startX + store.cropWidth) / 256) + layer.centerTileX,
+        endRow: Math.floor((startY + store.cropHeight) / 256) + layer.centerTileY,
+        startX: mod(startX, 256),
+        startY: mod(startY, 256),
+        endX: mod(startX + store.cropWidth, 256),
+        endY: mod(startY + store.cropHeight, 256),
+        mapName: store.map.name,
+        mapType: store.mapType,
+      });
     }
 
     const instance = getCurrentInstance();

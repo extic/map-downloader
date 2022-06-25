@@ -13,6 +13,10 @@ export const useMapStore = defineStore("map", {
     _map: startMap,
     _mapType: startMap.supportedMapTypes[0],
     _zoomLevel: 0,
+    _cropLeft: 0,
+    _cropTop: 0,
+    _cropWidth: 0,
+    _cropHeight: 0,
     _selectionStart: null as TileLocation | null,
     _selectionEnd: null as TileLocation | null,
   }),
@@ -21,6 +25,10 @@ export const useMapStore = defineStore("map", {
     map: (state): MapData => state._map,
     mapType: (state): string => state._mapType,
     zoomLevel: (state): number => state._zoomLevel,
+    cropLeft: (state): number => state._cropLeft,
+    cropTop: (state): number => state._cropTop,
+    cropWidth: (state): number => state._cropWidth,
+    cropHeight: (state): number => state._cropHeight,
     selectionStart: (state): TileLocation | null => state._selectionStart,
     selectionEnd: (state): TileLocation | null => state._selectionEnd,
   },
@@ -30,6 +38,10 @@ export const useMapStore = defineStore("map", {
       this._map = map;
       this._mapType = map.supportedMapTypes[0];
       this._zoomLevel = 0;
+      this._cropLeft = window.innerWidth / 2 - 150;
+      this._cropTop = window.innerHeight / 2 - 150;
+      this._cropWidth = 300;
+      this._cropHeight = 300;
       this._selectionStart = null;
       this._selectionEnd = null;
     },
@@ -40,6 +52,22 @@ export const useMapStore = defineStore("map", {
 
     setZoomLevel(zoomLevel: number): void {
       this._zoomLevel = zoomLevel;
+    },
+
+    setCropLeft(cropLeft: number): void {
+      this._cropLeft = cropLeft;
+    },
+
+    setCropTop(cropTop: number): void {
+      this._cropTop = cropTop;
+    },
+
+    setCropWidth(cropWidth: number): void {
+      this._cropWidth = cropWidth;
+    },
+
+    setCropHeight(cropHeight: number): void {
+      this._cropHeight = cropHeight;
     },
 
     setSelectionStart(selectionStart: TileLocation | null): void {

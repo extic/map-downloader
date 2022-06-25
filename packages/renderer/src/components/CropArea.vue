@@ -20,7 +20,7 @@ export default defineComponent({
   setup() {
     const store = useMapStore();
 
-    const dragged = (handle: string, deltaX: number, deltaY: number) => {
+    const dragged = (deltaX: number, deltaY: number, handle: string) => {
       switch (handle) {
         case "nw":
           store.setCropLeft(store.cropLeft + deltaX);

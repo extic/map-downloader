@@ -33,7 +33,7 @@ const drag = (event: MouseEvent, binding: DirectiveBinding) => {
     lastPosX = event.x;
     lastPosY = event.y;
 
-    binding.value(binding.arg, deltaX, deltaY);
+    binding.value(deltaX, deltaY, binding.arg);
 
     event.preventDefault();
     event.stopPropagation();

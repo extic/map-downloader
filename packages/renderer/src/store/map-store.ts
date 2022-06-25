@@ -13,6 +13,8 @@ export const useMapStore = defineStore("map", {
     _map: startMap,
     _mapType: startMap.supportedMapTypes[0],
     _zoomLevel: 0,
+    _posLeft: 0,
+    _posTop: 0,
     _cropLeft: 0,
     _cropTop: 0,
     _cropWidth: 0,
@@ -25,6 +27,8 @@ export const useMapStore = defineStore("map", {
     map: (state): MapData => state._map,
     mapType: (state): string => state._mapType,
     zoomLevel: (state): number => state._zoomLevel,
+    posLeft: (state): number => state._posLeft,
+    posTop: (state): number => state._posTop,
     cropLeft: (state): number => state._cropLeft,
     cropTop: (state): number => state._cropTop,
     cropWidth: (state): number => state._cropWidth,
@@ -52,6 +56,14 @@ export const useMapStore = defineStore("map", {
 
     setZoomLevel(zoomLevel: number): void {
       this._zoomLevel = zoomLevel;
+    },
+
+    setPosLeft(posLeft: number): void {
+      this._posLeft = posLeft;
+    },
+
+    setPosTop(posTop: number): void {
+      this._posTop = posTop;
     },
 
     setCropLeft(cropLeft: number): void {

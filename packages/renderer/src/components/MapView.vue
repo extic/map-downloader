@@ -8,15 +8,10 @@
     @mouseup="dragEnd($event)"
     @wheel="zoom($event)"
   >
-    <div
-      v-for="tile in tiles"
-      :key="tile.top * 100000 + tile.left"
-      :style="{ left: tile.left + 'px', top: tile.top + 'px' }"
-      class="tile"
-    >
+    <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
       <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
     </div>
-    <crop-area/>
+    <crop-area />
   </div>
 </template>
 
@@ -29,7 +24,6 @@ interface TileData {
   readonly left: number;
   readonly top: number;
   readonly url: string;
-  readonly urlPart: string;
   readonly row: number;
   readonly col: number;
 }
@@ -85,21 +79,18 @@ export default defineComponent({
 
       const layer = zoomLayers[zoomLevel.value];
 
-      let modPosX = mod(posX, 256);
-      let modPosY = mod(posY, 256);
-      let zoomLevelStr = zoomLevel.value.toString(10).padStart(2, "0");
+      const modPosX = mod(posX, 256);
+      const modPosY = mod(posY, 256);
+
       tiles.value = [];
       for (let j = 0; j < tilesY; j++) {
         const row = layer.centerTileY + Math.floor(posY / 256) - Math.floor(tilesY / 2) + j;
-        const rowStr = row.toString(16).padStart(8, "0");
         const top = Math.floor(mapHeight / 2) - layer.centerTileOffsetY - (Math.floor(tilesY / 2) - j) * 256 - modPosY;
         for (let i = 0; i < tilesX; i++) {
           const col = layer.centerTileX + Math.floor(posX / 256) - Math.floor(tilesX / 2) + i;
-          const colStr = col.toString(16).padStart(8, "0");
           const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX;
-          let urlPart = `L${zoomLevelStr}/R${rowStr}/C${colStr}`;
           const url = selectedMap.urlProvider(mapType.value, zoomLevel.value, row, col);
-          tiles.value.push({ left, top, url, urlPart, row, col });
+          tiles.value.push({ left, top, url, row, col });
         }
       }
     };
@@ -120,6 +111,7 @@ export default defineComponent({
     });
 
     onBeforeUpdate(() => {
+      console.log("posX", posX);
       updateTiles();
     });
 
@@ -152,7 +144,7 @@ export default defineComponent({
       const zoomIn = event.deltaY < 0;
       let zoom = zoomLevel.value + (zoomIn ? 1 : -1);
       if (zoom >= 0 && zoom <= selectedMap.value.zoomLayers.length - 1) {
-        const factor = selectedMap.value.zoomFactorProvider(zoomLevel.value, zoomIn)
+        const factor = selectedMap.value.zoomFactorProvider(zoomLevel.value, zoomIn);
 
         if (zoomIn) {
           posX *= factor;
@@ -218,26 +210,13 @@ export default defineComponent({
     width: 256px;
     height: 256px;
     box-sizing: content-box;
-    // opacity: 0.8;
-
-    &:hover {
-      // opacity: 1;
-      //border: 1px solid red;
-    }
+    border: 1px solid red;
 
     & > img {
-      // opacity: 0.5;
-      // filter: grayscale(1);
-
       &.hidden {
         visibility: hidden;
       }
     }
-
-    // & > img.selected {
-    //   opacity: 1;
-    //   filter: grayscale(0);
-    // }
   }
 }
 </style>

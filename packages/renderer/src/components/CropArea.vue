@@ -1,5 +1,5 @@
 <template>
-  <div class="crop-area" :style="{ left: cropLeft + 'px', top: cropTop + 'px', width: cropWidth + 'px', height: cropHeight + 'px' }">
+  <div class="crop-area" :style="{ left: store.cropLeft + 'px', top: store.cropTop + 'px', width: store.cropWidth + 'px', height: store.cropHeight + 'px' }">
     <div class="handle top-left" v-draggable:nw="dragged"></div>
     <div class="handle top-right" v-draggable:ne="dragged"></div>
     <div class="handle bottom-right" v-draggable:se="dragged"></div>
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, onBeforeUpdate, onMounted, ref, watch } from "vue";
+import { defineComponent } from "vue";
 import { useMapStore } from "../store/map-store";
 import draggable from "./draggable.directive";
 
@@ -19,95 +19,60 @@ export default defineComponent({
 
   setup() {
     const store = useMapStore();
-    const cropLeft = computed({
-      get(): number {
-        return store.cropLeft;
-      },
-      set(newValue: number) {
-        store.setCropLeft(newValue);
-      },
-    });
-
-    const cropTop = computed({
-      get(): number {
-        return store.cropTop;
-      },
-      set(newValue: number) {
-        store.setCropTop(newValue);
-      },
-    });
-
-    const cropWidth = computed({
-      get(): number {
-        return store.cropWidth;
-      },
-      set(newValue: number) {
-        store.setCropWidth(newValue);
-      },
-    });
-
-    const cropHeight = computed({
-      get(): number {
-        return store.cropHeight;
-      },
-      set(newValue: number) {
-        store.setCropHeight(newValue);
-      },
-    });
 
     const dragged = (handle: string, deltaX: number, deltaY: number) => {
       switch (handle) {
         case "nw":
-          cropLeft.value += deltaX;
-          cropTop.value += deltaY;
-          if (cropWidth.value - deltaX > 50) {
-            cropWidth.value -= deltaX;
+          store.setCropLeft(store.cropLeft + deltaX);
+          store.setCropTop(store.cropTop + deltaY);
+          if (store.cropWidth - deltaX > 50) {
+            store.setCropWidth(store.cropWidth - deltaX);
           }
-          if (cropHeight.value - deltaY > 50) {
-            cropHeight.value -= deltaY;
+          if (store.cropHeight - deltaY > 50) {
+            store.setCropHeight(store.cropHeight - deltaY);
           }
           break;
 
         case "ne":
-          if (cropWidth.value + deltaX < 50) {
-            cropLeft.value += deltaX;
+          if (store.cropWidth + deltaX < 50) {
+            store.setCropLeft(store.cropLeft + deltaX);
           } else {
-            cropWidth.value = cropWidth.value + deltaX;
+            store.setCropWidth(store.cropWidth + deltaX);
           }
-          cropTop.value += deltaY;
-          if (cropHeight.value - deltaY >= 50) {
-            cropHeight.value -= deltaY;
+          store.setCropTop(store.cropTop + deltaY);
+          if (store.cropHeight - deltaY >= 50) {
+            store.setCropHeight(store.cropHeight - deltaY);
           }
           break;
 
         case "sw":
-          cropLeft.value += deltaX;
-          if (cropWidth.value - deltaX >= 50) {
-            cropWidth.value -= deltaX;
+          store.setCropLeft(store.cropLeft + deltaX);
+          if (store.cropWidth - deltaX >= 50) {
+            store.setCropWidth(store.cropWidth - deltaX);
           }
-          if (cropHeight.value + deltaY < 50) {
-            cropTop.value += deltaY;
+          if (store.cropHeight + deltaY < 50) {
+            store.setCropTop(store.cropTop + deltaY);
           } else {
-            cropHeight.value += deltaY;
+            store.setCropHeight(store.cropHeight + deltaY);
           }
           break;
 
         case "se":
-          if (cropWidth.value + deltaX >= 50) {
-            cropWidth.value += deltaX;
+          if (store.cropWidth + deltaX >= 50) {
+            store.setCropWidth(store.cropWidth + deltaX);
           } else {
-            cropLeft.value += deltaX;
+            store.setCropLeft(store.cropLeft + deltaX);
           }
-          if (cropHeight.value + deltaY >= 50) {
-            cropHeight.value += deltaY;
+          if (store.cropHeight + deltaY >= 50) {
+            store.setCropHeight(store.cropHeight + deltaY);
           } else {
-            cropTop.value += deltaY;
+            store.setCropTop(store.cropTop + deltaY);
           }
           break;
       }
     };
 
-    return { dragged, cropLeft, cropTop, cropWidth, cropHeight }
+    return { dragged, store }
   },
 });
 </script>

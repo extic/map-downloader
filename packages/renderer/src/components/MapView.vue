@@ -99,18 +99,17 @@ export default defineComponent({
     const dragged = (deltaX: number, deltaY: number, handle: string) => {
       store.setPosLeft(store.posLeft - deltaX);
       store.setPosTop(store.posTop - deltaY);
+      store.setCropLeft(store.cropLeft + deltaX);
+      store.setCropTop(store.cropTop + deltaY);
       updateDownloadData();
       instance!.proxy!.$forceUpdate();
     }
 
     const updateDownloadData = () => {
-      const selectedMap = store.map;
       const zoomLayers = store.map.zoomLayers;
       const layer = zoomLayers[zoomLevel.value];
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
-      const tilesX = Math.ceil(mapWidth / 256) + 2;
-      const tilesY = Math.ceil(mapHeight / 256) + 2;
 
       const startX = store.cropLeft + store.posLeft - Math.floor(mapWidth / 2) + layer.centerTileOffsetX;
       const startY = store.cropTop + store.posTop - Math.floor(mapHeight / 2) + layer.centerTileOffsetY;

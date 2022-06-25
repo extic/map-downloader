@@ -6,17 +6,18 @@ let deltaY = 0;
 let lastPosX = 0;
 let lastPosY = 0;
 
-
 const dragStart = (event: MouseEvent, binding: DirectiveBinding) => {
   dragging = true;
   lastPosX = event.x;
   lastPosY = event.y;
   event.preventDefault();
-  event.stopPropagation();
+  if (event.ctrlKey) {
+    event.stopPropagation();
+  }
 
   document.onmousemove = (event) => {
     drag(event, binding);
-  }
+  };
   document.onmouseup = dragEnd;
 };
 
@@ -33,21 +34,16 @@ const drag = (event: MouseEvent, binding: DirectiveBinding) => {
     lastPosX = event.x;
     lastPosY = event.y;
 
-    binding.value(deltaX, deltaY, binding.arg);
-
-    event.preventDefault();
-    event.stopPropagation();
+    binding.value(deltaX, deltaY, event, binding.arg);
   }
 };
 
 export default {
-
   created: (el: HTMLElement) => {
     el.draggable = true;
   },
 
   mounted: (el: HTMLElement, binding: DirectiveBinding) => {
     el.onmousedown = (event) => dragStart(event, binding);
-  }
-}
-
+  },
+};

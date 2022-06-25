@@ -20,7 +20,6 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
   const croppedWidth = maxX * 256 - request.startX - (256 - request.endX);
   const croppedHeight = maxY * 256 - request.startY - (256 - request.endY);
   const overallImg = pimage.make(croppedWidth, croppedHeight, {});
-  // const overallImg = pimage.make(maxX * 256, maxY * 256, {});
   const overallCtx = overallImg.getContext("2d");
 
   for (let y = 0; y < maxY; y++) {

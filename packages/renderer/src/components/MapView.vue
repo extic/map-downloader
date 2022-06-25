@@ -143,10 +143,7 @@ export default defineComponent({
 
         store.setPosLeft(store.posLeft * factor);
         store.setPosTop(store.posTop * factor);
-
         store.setZoomLevel(zoom);
-        store.setSelectionStart(null);
-        store.setSelectionEnd(null);
 
         instance!.proxy!.$forceUpdate();
       }

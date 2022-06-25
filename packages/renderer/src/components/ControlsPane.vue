@@ -27,11 +27,6 @@
           </div>
         </div>
       </div>
-      <div class="field">
-        <label>Selected Tiles:</label>
-        <div v-if="selectedTiles">{{ selectedTiles }}</div>
-        <div v-else>No Selection Yet</div>
-      </div>
     </div>
     <div class="right-pane">
       <button @click="download">Download</button>
@@ -58,14 +53,6 @@ export default defineComponent({
       return store.zoomLevel;
     });
 
-    const selectionStart = computed(() => {
-      return store.selectionStart;
-    });
-
-    const selectionEnd = computed(() => {
-      return store.selectionEnd;
-    });
-
     const selectedMap = computed({
       get(): MapData {
         return store.map;
@@ -87,17 +74,6 @@ export default defineComponent({
 
     const allMaps = computed(() => {
       return maps;
-    });
-
-    const selectedTiles = computed((): number | null => {
-      const selectionStart = store.selectionStart;
-      const selectionEnd = store.selectionEnd;
-
-      if (selectionStart === null || selectionEnd === null) {
-        return null;
-      }
-
-      return (selectionEnd.x - selectionStart.x + 1) * (selectionEnd.y - selectionStart.y + 1);
     });
 
     watch(
@@ -132,7 +108,7 @@ export default defineComponent({
       );
     };
 
-    return { zoomLevel, selectionStart, selectionEnd, selectedTiles, download, donate, mapType, allMaps, selectedMap };
+    return { zoomLevel, download, donate, mapType, allMaps, selectedMap };
   },
 
   mounted() {

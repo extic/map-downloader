@@ -2,11 +2,6 @@ import { defineStore } from "pinia";
 import { MapData, maps } from "../../../common/maps/map.data";
 import { DownloadData } from "../../../common/download";
 
-export type TileLocation = {
-  readonly x: number;
-  readonly y: number;
-}
-
 const resetDownloadData = (): DownloadData => ({
   zoomLevel: 0,
   startRow: 0,
@@ -34,8 +29,6 @@ export const useMapStore = defineStore("map", {
     _cropWidth: 0,
     _cropHeight: 0,
     _downloadData: resetDownloadData() as DownloadData,
-    _selectionStart: null as TileLocation | null,
-    _selectionEnd: null as TileLocation | null,
   }),
 
   getters: {
@@ -49,8 +42,6 @@ export const useMapStore = defineStore("map", {
     cropWidth: (state): number => state._cropWidth,
     cropHeight: (state): number => state._cropHeight,
     downloadData: (state): DownloadData => state._downloadData,
-    selectionStart: (state): TileLocation | null => state._selectionStart,
-    selectionEnd: (state): TileLocation | null => state._selectionEnd,
   },
 
   actions: {
@@ -63,8 +54,6 @@ export const useMapStore = defineStore("map", {
       this._cropWidth = 300;
       this._cropHeight = 300;
       this._downloadData = resetDownloadData();
-      this._selectionStart = null;
-      this._selectionEnd = null;
     },
 
     setMapType(mapType: string): void {
@@ -101,14 +90,6 @@ export const useMapStore = defineStore("map", {
 
     setDownloadData(downloadData: DownloadData): void {
       this._downloadData = downloadData;
-    },
-
-    setSelectionStart(selectionStart: TileLocation | null): void {
-      this._selectionStart = selectionStart;
-    },
-
-    setSelectionEnd(selectionEnd: TileLocation | null): void {
-      this._selectionEnd = selectionEnd;
     },
   },
 });

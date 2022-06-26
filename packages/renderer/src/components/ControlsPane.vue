@@ -15,18 +15,6 @@
           </div>
         </div>
       </div>
-      <div class="field">
-        <div class="vertical">
-          <div class="vertical-item">
-            <label class="field-label">Scale:</label>
-            <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
-          </div>
-          <div class="vertical-item">
-            <label class="field-label">Zoom:</label>
-            <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="right-pane">
       <button @click="download">Download</button>

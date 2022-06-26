@@ -5,6 +5,12 @@
       <!-- <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div> -->
     </div>
     <crop-area />
+    <div class="map-info">
+      <div>Zoom:</div>
+      <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
+      <div class="gap">Scale:</div>
+      <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
+    </div>
   </div>
 </template>
 
@@ -62,11 +68,11 @@ export default defineComponent({
 
       tiles.value = [];
       for (let j = 0; j < tilesY; j++) {
-        const row = layer.centerTileY + Math.floor(store.posTop / 256) - Math.floor(tilesY / 2) + j;
-        const top = Math.floor(mapHeight / 2) - layer.centerTileOffsetY - (Math.floor(tilesY / 2) - j) * 256 - modPosY;
+        const row = layer.centerTileY + Math.floor(store.posTop / 256) - Math.floor(tilesY / 2) + j + 1;
+        const top = Math.floor(mapHeight / 2) - layer.centerTileOffsetY - (Math.floor(tilesY / 2) - j) * 256 - modPosY + 256;
         for (let i = 0; i < tilesX; i++) {
-          const col = layer.centerTileX + Math.floor(store.posLeft / 256) - Math.floor(tilesX / 2) + i;
-          const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX;
+          const col = layer.centerTileX + Math.floor(store.posLeft / 256) - Math.floor(tilesX / 2) + i + 1;
+          const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX + 256;
           const url = selectedMap.urlProvider(mapType.value, zoomLevel.value, row, col);
           tiles.value.push({ left, top, url, row, col });
         }
@@ -167,7 +173,7 @@ export default defineComponent({
       e.path[0].classList.add("hidden");
     };
 
-    return { tiles, map, dragged, zoom, noTileImage, mapType, selectedMap };
+    return { tiles, map, dragged, zoom, noTileImage, mapType, selectedMap, zoomLevel };
   },
 });
 </script>
@@ -188,6 +194,23 @@ export default defineComponent({
       &.hidden {
         visibility: hidden;
       }
+    }
+  }
+
+  .map-info {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    border: 1px solid gray;
+    border-radius: 0 10px 0 0;
+    color: white;
+    padding: 0.2em 2em;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 0;
+    border-left: 0;
+
+    .gap {
+      margin-left: 2em;
     }
   }
 }

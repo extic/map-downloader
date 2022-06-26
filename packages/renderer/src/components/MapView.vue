@@ -1,5 +1,5 @@
 <template>
-  <div ref="map" class="map-view" v-draggable="dragged" @wheel="zoom($event)">
+  <div ref="map" class="map-view" v-draggable="{ dragged }" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
       <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
       <!-- <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div> -->

@@ -11,7 +11,7 @@ const dragStart = (event: MouseEvent, binding: DirectiveBinding) => {
   lastPosX = event.x;
   lastPosY = event.y;
   event.preventDefault();
-  if (event.ctrlKey) {
+  if (binding.value.dragAllowed?.() ?? true) {
     event.stopPropagation();
   }
 
@@ -34,7 +34,7 @@ const drag = (event: MouseEvent, binding: DirectiveBinding) => {
     lastPosX = event.x;
     lastPosY = event.y;
 
-    binding.value(deltaX, deltaY, event, binding.arg);
+    binding.value.dragged(deltaX, deltaY, event, binding.arg);
   }
 };
 

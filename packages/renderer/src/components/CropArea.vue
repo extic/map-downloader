@@ -2,16 +2,16 @@
   <div
     class="crop-area"
     :style="{ left: store.cropLeft + 'px', top: store.cropTop + 'px', width: store.cropWidth + 'px', height: store.cropHeight + 'px' }"
-    v-draggable:c="dragged"
+    v-draggable:c="{ dragged, dragAllowed }"
   >
-    <div class="handle top-left" v-draggable:nw="dragged"></div>
-    <div class="handle top" v-draggable:n="dragged"></div>
-    <div class="handle top-right" v-draggable:ne="dragged"></div>
-    <div class="handle right" v-draggable:e="dragged"></div>
-    <div class="handle bottom-right" v-draggable:se="dragged"></div>
-    <div class="handle bottom" v-draggable:s="dragged"></div>
-    <div class="handle bottom-left" v-draggable:sw="dragged"></div>
-    <div class="handle left" v-draggable:w="dragged"></div>
+    <div class="handle top-left" v-draggable:nw="{ dragged, dragAllowed }"></div>
+    <div class="handle top" v-draggable:n="{ dragged, dragAllowed }"></div>
+    <div class="handle top-right" v-draggable:ne="{ dragged, dragAllowed }"></div>
+    <div class="handle right" v-draggable:e="{ dragged, dragAllowed }"></div>
+    <div class="handle bottom-right" v-draggable:se="{ dragged, dragAllowed }"></div>
+    <div class="handle bottom" v-draggable:s="{ dragged, dragAllowed }"></div>
+    <div class="handle bottom-left" v-draggable:sw="{ dragged, dragAllowed }"></div>
+    <div class="handle left" v-draggable:w="{ dragged, dragAllowed }"></div>
   </div>
 </template>
 
@@ -125,17 +125,19 @@ export default defineComponent({
           break;
 
         case "c":
-          if (event.ctrlKey) {
-            store.setCropLeft(store.cropLeft + deltaX);
-            store.setCropTop(store.cropTop + deltaY);
-            event.preventDefault();
-            event.stopPropagation();
-          }
+          store.setCropLeft(store.cropLeft + deltaX);
+          store.setCropTop(store.cropTop + deltaY);
+          event.preventDefault();
+          event.stopPropagation();
           break;
       }
     };
 
-    return { dragged, store };
+    const dragAllowed = () => {
+      return store.dragMode === "crop";
+    };
+
+    return { dragged, dragAllowed, store };
   },
 });
 </script>

@@ -2,36 +2,34 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  "appId": "YourAppID",
-  "asar": true,
-  "directories": {
-    "output": "release/${version}"
+  appId: "YourAppID",
+  asar: true,
+  directories: {
+    output: "release/${version}",
   },
-  "files": [
-    "dist"
-  ],
-  "mac": {
-    "artifactName": "${productName}_${version}.${ext}",
-    "target": [
-      "dmg"
-    ]
+  files: ["dist"],
+  mac: {
+    artifactName: "${productName}_${version}.${ext}",
+    target: ["dmg"],
   },
-  "win": {
-    "target": [
+  win: {
+    target: [
       {
-        "target": "nsis",
-        "arch": [
-          "x64"
-        ]
-      }
+        target: "portable",
+        arch: ["x64"],
+      },
+      {
+        target: "portable",
+        arch: ["ia32"],
+      },
     ],
-    "artifactName": "${productName}_${version}.${ext}",
-    "icon": "./packages/renderer/favicon.ico",
+    artifactName: "${productName}_${arch}_v${version}.${ext}",
+    icon: "./packages/renderer/favicon.ico",
   },
-  "nsis": {
-    "oneClick": false,
-    "perMachine": false,
-    "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
-  }
+  nsis: {
+    oneClick: false,
+    perMachine: false,
+    allowToChangeInstallationDirectory: true,
+    deleteAppDataOnUninstall: false,
+  },
 }

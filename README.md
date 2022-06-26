@@ -1,74 +1,27 @@
-# electron-vite-vue
+# Extremely Map Downloader
 
-[![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/ae3863e3-1aec-4eb1-8f9f-1890af56929d/deploy-status)](https://app.netlify.com/sites/electron-vite/deploys)
-![GitHub license](https://img.shields.io/github/license/caoxiemeihao/electron-vite-vue?style=flat)
-![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/electron-vite-vue?color=fa6470&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/caoxiemeihao/electron-vite-vue?style=flat)
+![[GitHub license](https://img.shields.io/badge/license-GPL-green)](https://img.shields.io/badge/license-GPL-green)
+![GitHub stars](https://img.shields.io/github/stars/extic/map-downloader?color=fa6470)
 
-
-**English | [简体中文](README.zh-CN.md)**
-
-🥳 Real simple `Electron` + `Vue` + `Vite` boilerplate.
 
 ## Overview
-
-📦 Out of the box  
-💪 Support C/C++ addons  
-🔩 Support Use Electron、Node.js API in Renderer-process  
-🌱 Simple directory structure，real flexible  
-🖥 It's easy to implement multiple windows  
+This standalone portable application allows downloading maps from various sources cropped to size by the user. This helps create base maps for orienteering purposes.
 
 ## Quick Start
+1. Choose map source
+2. Choose map type (if applicable)
+3. Show and resize the cropping area (use the control key to toggle between dragging the map or the crop area)
+4. Download your map.
 
-```sh
-npm create electron-vite
-```
 
-<!-- [![quick-start](https://asciinema.org/a/483731.svg)](https://asciinema.org/a/483731) -->
+![screenshot.gif](https://github.com/extic/map-downloader/blob/main/packages/renderer/public/screenshot.gif?raw=true)
 
-![electron-vite-vue.gif](https://github.com/electron-vite/electron-vite-vue/blob/main/packages/renderer/public/electron-vite-vue.gif?raw=true)
+## Donate
 
-## Debug
+If you like this application, I would very much appriciate your donation as it gives me the will to continue and improve it. Thank you!
 
-![electron-vite-react-debug.gif](https://github.com/electron-vite/electron-vite-react/blob/main/packages/renderer/public/electron-vite-react-debug.gif?raw=true)
-
-## Directory
-
-A `dist` folder will be generated everytime when `dev` or `build` command is executed. File structure of `dist` is identical to the `packages` directory to avoid any potential path calculation errors.
-
-```tree
-├── dist                      Will be generated following the structure of "packages" directory
-|   ├── main
-|   ├── preload
-|   └── renderer
-|
-├── scripts
-|   ├── build.mjs             Build script -> npm run build
-|   └── watch.mjs             Develop script -> npm run dev
-|
-├── packages
-|   ├── main                  Main-process source code
-|   |   └── vite.config.ts
-|   ├── preload               Preload-script source code
-|   |   └── vite.config.ts
-|   └── renderer              Renderer-process source code
-|       └── vite.config.ts
-```
-
-## List the modules you may use as far as possible
-
-Used in `Main-process` 👉 [electron-vite-boilerplate](https://github.com/caoxiemeihao/electron-vite-boilerplate)
-
-Used in `Renderer-process` 👉 [electron-vite-boilerplate/tree/nodeIntegration](https://github.com/caoxiemeihao/electron-vite-boilerplate/tree/nodeIntegration)
-
-**ES Modules**
-
-- [execa](https://www.npmjs.com/package/execa)
-- [node-fetch](https://www.npmjs.com/package/node-fetch)
-- [file-type](https://www.npmjs.com/package/file-type)
-
-**Native Addons(C/C++)**
-
-- [sqlite3](https://www.npmjs.com/package/sqlite3)
-- [serialport](https://www.npmjs.com/package/serialport)
+## List of map sources
+- GovMap - https://www.govmap.gov.il
+- Galil Tahton - https://v5.gis-net.co.il/v5/GalilTachton
+- Tel Aviv - https://gisn.tel-aviv.gov.il/iView2js4/index.aspx
+- Haifa - https://gis.haifa.muni.il/haifa_html5/

@@ -2,7 +2,7 @@
   <div ref="map" class="map-view" v-draggable="dragged" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
       <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
-      <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div>
+      <!-- <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div> -->
     </div>
     <crop-area />
   </div>
@@ -57,7 +57,6 @@ export default defineComponent({
       const tilesX = Math.ceil(mapWidth / 256) + 2;
       const tilesY = Math.ceil(mapHeight / 256) + 2;
 
-
       const modPosX = mod(store.posLeft, 256);
       const modPosY = mod(store.posTop, 256);
 
@@ -75,6 +74,11 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      const mapWidth = map.value!.clientWidth;
+      const mapHeight = map.value!.clientHeight;
+      store.setCropLeft(Math.floor(mapWidth / 2) - 150);
+      store.setCropTop(Math.floor(mapHeight / 2) - 150);
+
       updateTiles();
 
       watch(
@@ -88,8 +92,10 @@ export default defineComponent({
 
       watch(
         () => [store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight],
-        () => { updateDownloadData() }
-      )
+        () => {
+          updateDownloadData();
+        }
+      );
     });
 
     onBeforeUpdate(() => {
@@ -103,7 +109,7 @@ export default defineComponent({
       store.setCropTop(store.cropTop + deltaY);
       updateDownloadData();
       instance!.proxy!.$forceUpdate();
-    }
+    };
 
     const updateDownloadData = () => {
       const zoomLayers = store.map.zoomLayers;
@@ -127,7 +133,7 @@ export default defineComponent({
         mapName: store.map.name,
         mapType: store.mapType,
       });
-    }
+    };
 
     const instance = getCurrentInstance();
 
@@ -143,6 +149,15 @@ export default defineComponent({
         store.setPosLeft(store.posLeft * factor);
         store.setPosTop(store.posTop * factor);
         store.setZoomLevel(zoom);
+
+        const mapWidth = map.value!.clientWidth;
+        const mapHeight = map.value!.clientHeight;
+        const cropLeft = store.cropLeft - Math.floor(mapWidth / 2);
+        const cropTop = store.cropTop - Math.floor(mapHeight / 2);
+        store.setCropLeft(Math.floor(mapWidth / 2) + cropLeft * factor);
+        store.setCropTop(Math.floor(mapHeight / 2) + cropTop * factor);
+        store.setCropWidth(store.cropWidth * factor);
+        store.setCropHeight(store.cropHeight * factor);
 
         instance!.proxy!.$forceUpdate();
       }
@@ -167,7 +182,7 @@ export default defineComponent({
     width: 256px;
     height: 256px;
     box-sizing: content-box;
-    border: 1px solid red;
+    // border: 1px solid red;
 
     & > img {
       &.hidden {

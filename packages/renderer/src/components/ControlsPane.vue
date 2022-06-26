@@ -76,13 +76,6 @@ export default defineComponent({
       return maps;
     });
 
-    watch(
-      () => [store.downloadData],
-      ([downloadData]) => {
-        console.log("cropLeft, posLeft, data", store.cropLeft, store.posLeft, downloadData.endY);
-      }
-    );
-
     const download = async () => {
       openDownloadDialog();
       ipcRenderer.send("download-map", {

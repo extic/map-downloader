@@ -7,7 +7,6 @@ import { MapData, maps } from "../common/maps/map.data";
 import { DownloadData } from "../common/download";
 
 export const downloadMap = async (win: BrowserWindow, request: DownloadData) => {
-  console.log(request);
   if (!request) {
     return;
   }

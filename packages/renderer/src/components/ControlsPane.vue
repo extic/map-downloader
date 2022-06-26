@@ -136,7 +136,7 @@ export default defineComponent({
   width: 100%;
 
   .left-pane {
-    gap: 2em;
+    gap: 1em;
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -169,6 +169,7 @@ export default defineComponent({
       border-radius: 4px;
       position: relative;
       padding: 0.5em;
+      width: 10em;
       height: 2.5em;
       .drag-mode-title {
         position: absolute;
@@ -223,6 +224,7 @@ export default defineComponent({
     align-items: stretch;
     justify-items: center;
     gap: 0.5em;
+    margin-left: 1em;
   }
 
   .vertical {

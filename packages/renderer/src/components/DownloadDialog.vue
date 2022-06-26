@@ -35,8 +35,7 @@ export default defineComponent({
     GenericDialog,
   },
 
-  setup(props) {
-    const timeoutId = ref(0);
+  setup() {
     const progress = ref(0);
     const genericDialog = ref("genericDialog");
     const error = ref(false);
@@ -63,14 +62,13 @@ export default defineComponent({
       }
     });
 
-    return { timeoutId, progress, dialogAppeared, progressValue, genericDialog, error };
+    return { progress, dialogAppeared, progressValue, genericDialog, error };
   },
 
   methods: {
     cancel() {
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
-      }
+     ipcRenderer.send("cancel-download", {});
+
       const genericDialog = this.$refs.genericDialog as unknown as typeof GenericDialog;
       genericDialog.close();
     },

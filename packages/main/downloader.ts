@@ -6,10 +6,16 @@ import fetch from "electron-fetch";
 import { MapData, maps } from "../common/maps/map.data";
 import { DownloadData } from "../common/download";
 
+export const downloadOptions = {
+  canceled: false,
+}
+
 export const downloadMap = async (win: BrowserWindow, request: DownloadData) => {
   if (!request) {
     return;
   }
+
+  downloadOptions.canceled = false;
 
   const maxX = request.endCol - request.startCol + 1;
   const maxY = request.endRow - request.startRow + 1;
@@ -23,6 +29,11 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
 
   for (let y = 0; y < maxY; y++) {
     for (let x = 0; x < maxX; x++) {
+      if (downloadOptions.canceled) {
+        console.log("Download canceled");
+        return;
+      }
+
       const progress = (x + y * maxX) / (maxX * maxY);
       win.webContents.send("download-progress", progress);
 

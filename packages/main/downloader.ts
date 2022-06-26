@@ -20,6 +20,8 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
   const maxX = request.endCol - request.startCol + 1;
   const maxY = request.endRow - request.startRow + 1;
 
+  console.log(`Starting download of ${maxX * maxY} tiles`);
+
   const map = maps.find((it) => it.name === request.mapName)!!;
 
   const croppedWidth = maxX * 256 - request.startX - (256 - request.endX);

@@ -1,7 +1,7 @@
 <template>
   <GenericDialog ref="genericDialog" :modal="true" @dialogAppeared="dialogAppeared()" :escape-closes="false" class="download-dialog">
     <template #dialog-title>
-      <span>Creating Map...</span>
+      <span>{{ error ? 'Error' : 'Creating Map...' }}</span>
     </template>
     <template #dialog-content>
       <div class="donate-dialog-content">
@@ -13,10 +13,10 @@
               <div class="progress-value">{{ progressValue() }}%</div>
             </div>
           </div>
-          <div v-else>There was an error while downloading. Please try again.</div>
+          <div v-else class="error">{{ error }}</div>
         </div>
         <div class="buttons">
-          <button @click="cancel()">{{ error ? 'Done' : 'Cancel' }}</button>
+          <button @click="cancel()">{{ error ? "Close" : "Cancel" }}</button>
         </div>
       </div>
     </template>
@@ -25,7 +25,9 @@
 
 <script lang="ts">
 import { ipcRenderer } from "electron";
-import { createApp, defineComponent, ref } from "vue";
+import { createApp, defineComponent, onMounted, ref } from "vue";
+import { pinia } from "../main";
+import { useMapStore } from "../store/map-store";
 import DownloadDialog from "./DownloadDialog.vue";
 import GenericDialog, { createDialogMountingPoint, focusOnModalOnly } from "./GenericDialog.vue";
 
@@ -36,9 +38,10 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useMapStore();
     const progress = ref(0);
     const genericDialog = ref("genericDialog");
-    const error = ref(false);
+    const error = ref(null as string | null);
 
     const dialogAppeared = () => {
       //do nothing
@@ -58,16 +61,36 @@ export default defineComponent({
         const genericDialogInstance = genericDialog.value as unknown as typeof GenericDialog;
         genericDialogInstance.close();
       } else {
-        error.value = true;
+        error.value = "There was an error while downloading. Please try again.";
       }
     });
 
-    return { progress, dialogAppeared, progressValue, genericDialog, error };
+    onMounted(() => {
+      if (store.tooLarge) {
+        error.value = "Content to download is too large, please down-size the crop area.";
+      } else {
+        ipcRenderer.send("download-map", {
+          zoomLevel: store.downloadData.zoomLevel,
+          startRow: store.downloadData.startRow,
+          startCol: store.downloadData.startCol,
+          endRow: store.downloadData.endRow,
+          endCol: store.downloadData.endCol,
+          startX: store.downloadData.startX,
+          startY: store.downloadData.startY,
+          endX: store.downloadData.endX,
+          endY: store.downloadData.endY,
+          mapName: store.downloadData.mapName,
+          mapType: store.downloadData.mapType,
+        });
+      }
+    });
+
+    return { progress, dialogAppeared, progressValue, genericDialog, error, store };
   },
 
   methods: {
     cancel() {
-     ipcRenderer.send("cancel-download", {});
+      ipcRenderer.send("cancel-download", {});
 
       const genericDialog = this.$refs.genericDialog as unknown as typeof GenericDialog;
       genericDialog.close();
@@ -76,7 +99,7 @@ export default defineComponent({
 });
 
 export function openDownloadDialog(): void {
-  createApp(DownloadDialog).mount(createDialogMountingPoint());
+  createApp(DownloadDialog).use(pinia).mount(createDialogMountingPoint());
   focusOnModalOnly(".download-dialog");
 }
 </script>
@@ -115,6 +138,10 @@ export function openDownloadDialog(): void {
         line-height: 2em;
         text-align: center;
       }
+    }
+
+    .error {
+      margin-bottom: 2em;
     }
   }
 

@@ -95,23 +95,8 @@ export default defineComponent({
       store.resetCropArea();
     };
 
-    const download = async () => {
+    const download = () => {
       openDownloadDialog();
-      ipcRenderer.send("download-map", {
-        zoomLevel: store.downloadData.zoomLevel,
-        startRow: store.downloadData.startRow,
-        startCol: store.downloadData.startCol,
-        endRow: store.downloadData.endRow,
-        endCol: store.downloadData.endCol,
-        startX: store.downloadData.startX,
-        startY: store.downloadData.startY,
-        endX: store.downloadData.endX,
-        endY: store.downloadData.endY,
-        mapName: store.downloadData.mapName,
-        mapType: store.downloadData.mapType,
-      });
-
-      store.downloadData;
     };
 
     const donate = () => {

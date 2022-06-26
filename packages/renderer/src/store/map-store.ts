@@ -35,6 +35,7 @@ export const useMapStore = defineStore("map", {
     _downloadData: resetDownloadData() as DownloadData,
     _mapWidth: 0,
     _mapHeight: 0,
+    _tooLarge: false,
   }),
 
   getters: {
@@ -52,6 +53,7 @@ export const useMapStore = defineStore("map", {
     downloadData: (state): DownloadData => state._downloadData,
     mapWidth: (state): number => state._mapWidth,
     mapHeight: (state): number => state._mapHeight,
+    tooLarge: (state): boolean => state._tooLarge,
   },
 
   actions: {
@@ -109,6 +111,10 @@ export const useMapStore = defineStore("map", {
 
     setDownloadData(downloadData: DownloadData): void {
       this._downloadData = downloadData;
+
+      const tilesX = downloadData.endCol - downloadData.startCol + 1;
+      const tilesY = downloadData.endRow - downloadData.startRow + 1;
+      this._tooLarge = tilesX * tilesY > 2500
     },
 
     setMapDimensions(mapWidth: number, mapHeight: number): void {

@@ -1,17 +1,18 @@
 <template>
   <div
     class="crop-area"
+    :class="{ disabled: !dragAllowed() }"
     :style="{ left: store.cropLeft + 'px', top: store.cropTop + 'px', width: store.cropWidth + 'px', height: store.cropHeight + 'px' }"
     v-draggable:c="{ dragged, dragAllowed }"
   >
-    <div class="handle top-left" v-draggable:nw="{ dragged, dragAllowed }"></div>
-    <div class="handle top" v-draggable:n="{ dragged, dragAllowed }"></div>
-    <div class="handle top-right" v-draggable:ne="{ dragged, dragAllowed }"></div>
-    <div class="handle right" v-draggable:e="{ dragged, dragAllowed }"></div>
-    <div class="handle bottom-right" v-draggable:se="{ dragged, dragAllowed }"></div>
-    <div class="handle bottom" v-draggable:s="{ dragged, dragAllowed }"></div>
-    <div class="handle bottom-left" v-draggable:sw="{ dragged, dragAllowed }"></div>
-    <div class="handle left" v-draggable:w="{ dragged, dragAllowed }"></div>
+    <div class="handle top-left" :class="{ hidden: !dragAllowed() }" v-draggable:nw="{ dragged, dragAllowed }"></div>
+    <div class="handle top" :class="{ hidden: !dragAllowed() }" v-draggable:n="{ dragged, dragAllowed }"></div>
+    <div class="handle top-right" :class="{ hidden: !dragAllowed() }" v-draggable:ne="{ dragged, dragAllowed }"></div>
+    <div class="handle right" :class="{ hidden: !dragAllowed() }" v-draggable:e="{ dragged, dragAllowed }"></div>
+    <div class="handle bottom-right" :class="{ hidden: !dragAllowed() }" v-draggable:se="{ dragged, dragAllowed }"></div>
+    <div class="handle bottom" :class="{ hidden: !dragAllowed() }" v-draggable:s="{ dragged, dragAllowed }"></div>
+    <div class="handle bottom-left" :class="{ hidden: !dragAllowed() }" v-draggable:sw="{ dragged, dragAllowed }"></div>
+    <div class="handle left" :class="{ hidden: !dragAllowed() }" v-draggable:w="{ dragged, dragAllowed }"></div>
   </div>
 </template>
 
@@ -151,6 +152,10 @@ export default defineComponent({
   cursor: move;
   background-color: rgba(0, 0, 0, 0.3);
 
+  &.disabled {
+    cursor: inherit;
+  }
+
   .handle {
     position: absolute;
     border-color: lightblue;
@@ -230,6 +235,15 @@ export default defineComponent({
       width: 15px;
       cursor: w-resize;
       border-width: 0 1px 0 0;
+    }
+
+    &.hidden {
+      border: 0;
+      cursor: inherit;
+
+      &:hover {
+        background-color: transparent;
+      }
     }
   }
 }

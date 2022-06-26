@@ -26,10 +26,4 @@
     artifactName: "${productName}_${arch}_v${version}.${ext}",
     icon: "./packages/renderer/favicon.ico",
   },
-  nsis: {
-    oneClick: false,
-    perMachine: false,
-    allowToChangeInstallationDirectory: true,
-    deleteAppDataOnUninstall: false,
-  },
 }

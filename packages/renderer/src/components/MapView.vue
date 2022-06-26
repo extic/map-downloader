@@ -4,13 +4,14 @@
       <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
       <!-- <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div> -->
     </div>
-    <crop-area />
+    <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
     <div class="map-info">
       <div>Zoom:</div>
       <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
       <div class="gap">Scale:</div>
       <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
     </div>
+    <div class="crop-too-small" v-if="store.showCrop && isCropAreaTooSmall">Crop area too small to show - either zoom in or reset</div>
   </div>
 </template>
 
@@ -50,6 +51,10 @@ export default defineComponent({
       return store.zoomLevel;
     });
 
+    const isCropAreaTooSmall = computed(() => {
+      return store.cropWidth < 50 || store.cropHeight < 50;
+    });
+
     const mod = (n: number, m: number): number => {
       return ((n % m) + m) % m;
     };
@@ -79,19 +84,29 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
+    const updateMapDimensions = () => {
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
-      store.setCropLeft(Math.floor(mapWidth / 2) - 150);
-      store.setCropTop(Math.floor(mapHeight / 2) - 150);
+      store.setMapDimensions(mapWidth, mapHeight);
+    };
 
+    onMounted(() => {
+      updateMapDimensions();
+      store.resetCropArea();
+      updateDownloadData();
       updateTiles();
 
       watch(
         () => [store.map, store.mapType],
-        () => {
+        ([newMap, newMapType], [oldMap, oldMapType]) => {
           store.setPosLeft(0);
           store.setPosTop(0);
+
+          if (oldMap !== newMap) {
+            store.resetCropArea();
+            updateDownloadData();
+          }
+
           instance!.proxy!.$forceUpdate();
         }
       );
@@ -102,6 +117,10 @@ export default defineComponent({
           updateDownloadData();
         }
       );
+
+      (document.getElementsByTagName("BODY")[0] as HTMLElement).onresize = (event) => {
+        updateMapDimensions();
+      };
     });
 
     onBeforeUpdate(() => {
@@ -173,7 +192,7 @@ export default defineComponent({
       e.path[0].classList.add("hidden");
     };
 
-    return { tiles, map, dragged, zoom, noTileImage, mapType, selectedMap, zoomLevel };
+    return { store, tiles, map, dragged, zoom, noTileImage, mapType, selectedMap, zoomLevel, isCropAreaTooSmall };
   },
 });
 </script>
@@ -212,6 +231,19 @@ export default defineComponent({
     .gap {
       margin-left: 2em;
     }
+  }
+
+  .crop-too-small {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 15em);
+    width: 30em;
+    background-color: rgba(130, 0, 0, 0.7);
+    color: white;
+    padding: 0.5em 0;
+    border: 1px solid #d32929;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
   }
 }
 </style>

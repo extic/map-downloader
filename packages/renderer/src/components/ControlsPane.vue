@@ -15,16 +15,35 @@
           </div>
         </div>
       </div>
+      <div class="crop-controls">
+        <div class="crop-controls-title">Crop Area</div>
+        <div class="field">
+          <button @click="toggleShowCrop">{{ store.showCrop ? "Hide" : "Show" }}</button>
+          <button @click="resetCropArea">Reset</button>
+        </div>
+      </div>
+      <div class="drag-mode" v-if="store.showCrop" title="Press <ctrl> to toggle drag mode">
+        <div class="drag-mode-title">Mode</div>
+        <div class="field">
+          <div class="drag-mode-toggle-container" @click="toggleDragMode">
+            <div class="drag-mode-toggle" :class="{ selected: store.dragMode == 'crop' }"></div>
+          </div>
+          <div class="move-options">
+            <div class="move-option" @click="store.setDragMode('map')">Move Map</div>
+            <div class="move-option" @click="store.setDragMode('crop')">Move Crop Area</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="right-pane">
-      <button @click="download">Download</button>
+      <button @click="download" :disabled="!store.showCrop">Download</button>
       <button @click="donate">Donate</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch } from "vue";
+import { computed, defineComponent, onMounted, watch } from "vue";
 import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { useMapStore } from "../store/map-store";
@@ -64,6 +83,18 @@ export default defineComponent({
       return maps;
     });
 
+    const toggleShowCrop = () => {
+      store.setShowCrop(!store.showCrop);
+    };
+
+    const toggleDragMode = () => {
+      store.setDragMode(store.dragMode === "map" ? "crop" : "map");
+    };
+
+    const resetCropArea = () => {
+      store.resetCropArea();
+    };
+
     const download = async () => {
       openDownloadDialog();
       ipcRenderer.send("download-map", {
@@ -89,13 +120,24 @@ export default defineComponent({
       );
     };
 
-    return { zoomLevel, download, donate, mapType, allMaps, selectedMap };
-  },
+    onMounted(() => {
+      if (isProduction()) {
+        donate();
+      }
 
-  mounted() {
-    if (isProduction()) {
-      this.donate();
-    }
+      document.onkeydown = (event) => {
+        if (event.key === 'Control') {
+          store.setDragMode("crop");
+        }
+      };
+      document.onkeyup = (event) => {
+        if (event.key === 'Control') {
+          store.setDragMode("map");
+        }
+      };
+    });
+
+    return { store, toggleShowCrop, toggleDragMode, zoomLevel, download, donate, mapType, allMaps, selectedMap, resetCropArea };
   },
 });
 </script>
@@ -113,6 +155,80 @@ export default defineComponent({
     display: flex;
     align-items: center;
     flex-grow: 1;
+
+    .crop-controls {
+      display: flex;
+      border: 1px solid lightgray;
+      border-radius: 4px;
+      position: relative;
+      padding: 0.5em;
+      height: 2.5em;
+
+      .crop-controls-title {
+        position: absolute;
+        font-size: 0.8em;
+        top: -0.6em;
+        left: 0.5em;
+        background-color: #2b669b;
+        padding: 0 0.4em;
+      }
+
+      button {
+        width: 7em;
+      }
+    }
+
+    .drag-mode {
+      display: flex;
+      border: 1px solid lightgray;
+      border-radius: 4px;
+      position: relative;
+      padding: 0.5em;
+      height: 2.5em;
+      .drag-mode-title {
+        position: absolute;
+        font-size: 0.8em;
+        top: -0.6em;
+        left: 0.5em;
+        background-color: #2b669b;
+        padding: 0 0.4em;
+      }
+
+      .drag-mode-toggle-container {
+        margin-left: 1em;
+        border: 1px solid lightgray;
+        width: 1em;
+        height: 2em;
+        border-radius: 10px;
+        background-color: rgb(143 143 143);
+        cursor: pointer;
+        position: relative;
+
+        .drag-mode-toggle {
+          width: 1em;
+          height: 1em;
+          border: 1px solid gray;
+          position: absolute;
+          box-sizing: border-box;
+          border-radius: 10px;
+          background-color: white;
+          transition: bottom 0.2s;
+          bottom: 1em;
+
+          &.selected {
+            bottom: 0;
+          }
+        }
+      }
+
+      .move-options {
+        text-align: left;
+
+        .move-option {
+          cursor: pointer;
+        }
+      }
+    }
   }
 
   .right-pane {

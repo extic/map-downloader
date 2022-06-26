@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import { createApp, defineComponent, onMounted, PropType, ref } from "vue";
-import GenericDialog, { createDialogMountingPoint, focusOnModalOnly } from "./GenericDialog.vue";
-import DownloadDialog from "./DownloadDialog.vue";
 import { ipcRenderer } from "electron";
+import { createApp, defineComponent, ref } from "vue";
+import DownloadDialog from "./DownloadDialog.vue";
+import GenericDialog, { createDialogMountingPoint, focusOnModalOnly } from "./GenericDialog.vue";
 
 export default defineComponent({
   name: "DownloadDialog",

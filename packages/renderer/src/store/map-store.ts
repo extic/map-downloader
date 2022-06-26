@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { MapData, maps } from "../../../common/maps/map.data";
 import { DownloadData } from "../../../common/download";
 
+export type DragMode = 'map' | 'crop'
+
 const resetDownloadData = (): DownloadData => ({
   zoomLevel: 0,
   startRow: 0,
@@ -24,11 +26,15 @@ export const useMapStore = defineStore("map", {
     _zoomLevel: 0,
     _posLeft: 0,
     _posTop: 0,
+    _showCrop: true,
     _cropLeft: 0,
     _cropTop: 0,
     _cropWidth: 0,
     _cropHeight: 0,
+    _dragMode: "map" as DragMode,
     _downloadData: resetDownloadData() as DownloadData,
+    _mapWidth: 0,
+    _mapHeight: 0,
   }),
 
   getters: {
@@ -37,11 +43,15 @@ export const useMapStore = defineStore("map", {
     zoomLevel: (state): number => state._zoomLevel,
     posLeft: (state): number => state._posLeft,
     posTop: (state): number => state._posTop,
+    showCrop: (state): boolean => state._showCrop,
     cropLeft: (state): number => state._cropLeft,
     cropTop: (state): number => state._cropTop,
     cropWidth: (state): number => state._cropWidth,
     cropHeight: (state): number => state._cropHeight,
+    dragMode: (state): DragMode => state._dragMode,
     downloadData: (state): DownloadData => state._downloadData,
+    mapWidth: (state): number => state._mapWidth,
+    mapHeight: (state): number => state._mapHeight,
   },
 
   actions: {
@@ -49,6 +59,7 @@ export const useMapStore = defineStore("map", {
       this._map = map;
       this._mapType = map.supportedMapTypes[0];
       this._zoomLevel = 0;
+      // this._showCrop = false;
       this._cropLeft = 0;
       this._cropTop = 0;
       this._cropWidth = 300;
@@ -72,6 +83,10 @@ export const useMapStore = defineStore("map", {
       this._posTop = posTop;
     },
 
+    setShowCrop(showCrop: boolean): void {
+      this._showCrop = showCrop;
+    },
+
     setCropLeft(cropLeft: number): void {
       this._cropLeft = cropLeft;
     },
@@ -88,8 +103,24 @@ export const useMapStore = defineStore("map", {
       this._cropHeight = cropHeight;
     },
 
+    setDragMode(dragMode: DragMode): void {
+      this._dragMode = dragMode;
+    },
+
     setDownloadData(downloadData: DownloadData): void {
       this._downloadData = downloadData;
+    },
+
+    setMapDimensions(mapWidth: number, mapHeight: number): void {
+      this._mapWidth = mapWidth;
+      this._mapHeight = mapHeight;
+    },
+
+    resetCropArea() {
+      this.setCropLeft(Math.floor(this.mapWidth / 2) - 150);
+      this.setCropTop(Math.floor(this.mapHeight / 2) - 150);
+      this.setCropWidth(300);
+      this.setCropHeight(300);
     },
   },
 });

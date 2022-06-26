@@ -23,7 +23,7 @@ export const mapDataGalilTahton: MapData = {
     return pimage.decodeJPEGFromStream(Readable.from(buffer));
   },
 
-  supportedMapTypes: ["satellite"],
+  supportedMapTypes: ["Satellite"],
 
   zoomLayers: [
     {

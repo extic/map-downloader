@@ -29,22 +29,10 @@ import GenericDialog, { createDialogMountingPoint, focusOnModalOnly } from "./Ge
 import DownloadDialog from "./DownloadDialog.vue";
 import { ipcRenderer } from "electron";
 
-export interface DownloadDialogOptions {
-  readonly zoomLevel: number;
-  readonly startX: number;
-  readonly startY: number;
-  readonly maxX: number;
-  readonly maxY: number;
-  readonly mapType: string;
-}
-
 export default defineComponent({
   name: "DownloadDialog",
   components: {
     GenericDialog,
-  },
-  props: {
-    options: Object as PropType<DownloadDialogOptions>,
   },
 
   setup(props) {
@@ -89,8 +77,8 @@ export default defineComponent({
   },
 });
 
-export function openDownloadDialog(options: DownloadDialogOptions): void {
-  createApp(DownloadDialog, { options }).mount(createDialogMountingPoint());
+export function openDownloadDialog(): void {
+  createApp(DownloadDialog).mount(createDialogMountingPoint());
   focusOnModalOnly(".download-dialog");
 }
 </script>

@@ -11,6 +11,9 @@
       <div class="gap">Scale:</div>
       <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
     </div>
+    <div class="app-version">
+      Version: v{{store.appVersion}}
+    </div>
     <div class="crop-too-small" v-if="store.showCrop && isCropAreaTooSmall">Crop area too small to show - either zoom in or reset</div>
   </div>
 </template>
@@ -231,6 +234,20 @@ export default defineComponent({
     .gap {
       margin-left: 2em;
     }
+  }
+
+  .app-version {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    border: 1px solid gray;
+    border-radius: 10px 0 0 0;
+    color: white;
+    padding: 0.2em 2em;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom: 0;
+    border-right: 0;
   }
 
   .crop-too-small {

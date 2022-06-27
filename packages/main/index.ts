@@ -1,7 +1,7 @@
 import { app, BrowserWindow, shell,ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
-import { utils } from "./test";
+import { eventRegistrar } from "./event-registrar";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -55,7 +55,7 @@ async function createWindow() {
     return { action: 'deny' }
   })
 
-  utils.aaa(win);
+  eventRegistrar.registerEvents(win, app);
 }
 
 app.whenReady().then(createWindow)

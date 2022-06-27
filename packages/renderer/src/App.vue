@@ -3,10 +3,20 @@
 </template>
 
 <script lang="ts">
+import { ipcRenderer } from "electron";
 import { defineComponent } from "vue";
+import { useMapStore } from "./store/map-store";
 
 export default defineComponent({
   name: "App",
+
+  setup() {
+    ipcRenderer.on("app-version", (_event, version) => {
+      const store = useMapStore();
+      store.setAppVersion(version);
+    })
+    ipcRenderer.send("get-app-version");
+  }
 });
 </script>
 

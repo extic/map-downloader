@@ -47,7 +47,6 @@ import { computed, defineComponent, onMounted, watch } from "vue";
 import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { useMapStore } from "../store/map-store";
-import { ipcRenderer } from "electron";
 import { MapData, maps } from "../../../common/maps/map.data";
 
 export default defineComponent({

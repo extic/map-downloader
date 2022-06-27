@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { MapData, maps } from "../../../common/maps/map.data";
 import { DownloadData } from "../../../common/download";
+import { string } from "yargs";
 
 export type DragMode = 'map' | 'crop'
 
@@ -36,6 +37,7 @@ export const useMapStore = defineStore("map", {
     _mapWidth: 0,
     _mapHeight: 0,
     _tooLarge: false,
+    _appVersion: "",
   }),
 
   getters: {
@@ -54,6 +56,7 @@ export const useMapStore = defineStore("map", {
     mapWidth: (state): number => state._mapWidth,
     mapHeight: (state): number => state._mapHeight,
     tooLarge: (state): boolean => state._tooLarge,
+    appVersion: (state): string => state._appVersion,
   },
 
   actions: {
@@ -127,6 +130,10 @@ export const useMapStore = defineStore("map", {
       this.setCropTop(Math.floor(this.mapHeight / 2) - 150);
       this.setCropWidth(300);
       this.setCropHeight(300);
+    },
+
+    setAppVersion(version: string): void {
+      this._appVersion = version;
     },
   },
 });

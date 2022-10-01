@@ -20,7 +20,7 @@
     "@playwright/test": "^1.22.2",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
-    "@vitejs/plugin-vue": "^2.3.2",
+    "@vitejs/plugin-vue": "^2.3.4",
     "@vue/eslint-config-typescript": "^11.0.0",
     "electron": "19.0.7",
     "electron-builder": "^23.3.3",

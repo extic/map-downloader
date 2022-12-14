@@ -1,12 +1,12 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData } from "./map.data";
+import { MapData, UrlUsageType } from "./map.data";
 
 export const mapDataTelAviv: MapData = {
   name: "Tel-Aviv",
 
-  urlProvider: (mapType: string, zoomLevel: number, row: number, col: number): string => {
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
     let zoomLevelStr = zoomLevel + 13;
     const rowStr = row.toString(10);
     const colStr = col.toString(10);
@@ -26,6 +26,8 @@ export const mapDataTelAviv: MapData = {
   },
 
   supportedMapTypes: ["Satellite"],
+
+  showScale: true,
 
   zoomLayers: [
     {

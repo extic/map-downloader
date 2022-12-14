@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain, App } from "electron";
 import { downloadMap, downloadOptions } from "./downloader";
+import { handleHttpRequest } from "./http-request.service";
 
 export const eventRegistrar = {
   registerEvents: (win: BrowserWindow, app: App) => {
@@ -14,5 +15,7 @@ export const eventRegistrar = {
     ipcMain.on("get-app-version", () => {
       win.webContents.send("app-version", app.getVersion());
     });
+
+    ipcMain.handle('http:request', handleHttpRequest);
   },
 };

@@ -1,27 +1,31 @@
 <template>
   <div ref="map" class="map-view" v-draggable="{ dragged }" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
-      <img :src="tile.url" @error="noTileImage($event)" alt="map tile" />
+      <img :src="tile.url" @error="noTileImage($event)" alt="map tile" origin="https://en.mapy.cz/"/>
       <!-- <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div> -->
     </div>
     <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
     <div class="map-info">
       <div>Zoom:</div>
       <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
-      <div class="gap">Scale:</div>
-      <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
+      <div class="scale" v-if="selectedMap.showScale">
+        <div class="gap">Scale:</div>
+        <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
+      </div>
     </div>
     <div class="app-version">
       Version: v{{store.appVersion}}
     </div>
     <div class="crop-too-small" v-if="store.showCrop && isCropAreaTooSmall">Crop area too small to show - either zoom in or reset</div>
   </div>
+
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, getCurrentInstance, onBeforeUpdate, onMounted, ref, watch } from "vue";
 import { useMapStore } from "../store/map-store";
 import CropArea from "./CropArea.vue";
+import { MapData, UrlUsageType } from "../../../common/maps/map.data";
 
 interface TileData {
   readonly left: number;
@@ -62,7 +66,7 @@ export default defineComponent({
       return ((n % m) + m) % m;
     };
 
-    const updateTiles = () => {
+    const updateTiles = async () => {
       const selectedMap = store.map;
       const zoomLayers = store.map.zoomLayers;
       const layer = zoomLayers[zoomLevel.value];
@@ -81,7 +85,7 @@ export default defineComponent({
         for (let i = 0; i < tilesX; i++) {
           const col = layer.centerTileX + Math.floor(store.posLeft / 256) - Math.floor(tilesX / 2) + i + 1;
           const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX + 256;
-          const url = selectedMap.urlProvider(mapType.value, zoomLevel.value, row, col);
+          const url = await selectedMap.urlProvider(UrlUsageType.VIEW, mapType.value, zoomLevel.value, row, col);
           tiles.value.push({ left, top, url, row, col });
         }
       }
@@ -93,17 +97,19 @@ export default defineComponent({
       store.setMapDimensions(mapWidth, mapHeight);
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       updateMapDimensions();
       store.resetCropArea();
       updateDownloadData();
-      updateTiles();
+      await updateTiles();
 
       watch(
         () => [store.map, store.mapType],
         ([newMap, newMapType], [oldMap, oldMapType]) => {
-          store.setPosLeft(0);
-          store.setPosTop(0);
+          if (newMap !== oldMap) {
+            store.setPosLeft(0);
+            store.setPosTop(0);
+          }
 
           if (oldMap !== newMap) {
             store.resetCropArea();
@@ -115,19 +121,22 @@ export default defineComponent({
       );
 
       watch(
-        () => [store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight],
+        () => [store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight, store.mapType],
         () => {
           updateDownloadData();
+        }
+      );
+
+      watch(
+        () => [store.zoomLevel, store.posLeft, store.posTop, store.map, store.mapType],
+        async () => {
+          await updateTiles();
         }
       );
 
       (document.getElementsByTagName("BODY")[0] as HTMLElement).onresize = (event) => {
         updateMapDimensions();
       };
-    });
-
-    onBeforeUpdate(() => {
-      updateTiles();
     });
 
     const dragged = (deltaX: number, deltaY: number, handle: string) => {
@@ -233,6 +242,10 @@ export default defineComponent({
 
     .gap {
       margin-left: 2em;
+    }
+
+    .scale {
+      display: flex;
     }
   }
 

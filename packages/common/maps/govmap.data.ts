@@ -1,12 +1,12 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData } from "./map.data";
+import { MapData, UrlUsageType } from "./map.data";
 
 export const mapDataGovMap: MapData = {
   name: "GovMap",
 
-  urlProvider: (mapType: string, zoomLevel: number, row: number, col: number): string => {
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
     let zoomLevelStr = zoomLevel.toString(10).padStart(2, "0");
     const rowStr = row.toString(16).padStart(8, "0");
     const colStr = col.toString(16).padStart(8, "0");
@@ -35,6 +35,8 @@ export const mapDataGovMap: MapData = {
   },
 
   supportedMapTypes: ["Satellite", "Street & Buildings"],
+
+  showScale: true,
 
   zoomLayers: [
     {

@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { BrowserWindow } from "electron";
 import crypto from "crypto";
 import fetch from "electron-fetch";
-import { MapData, maps } from "../common/maps/map.data";
+import { MapData, maps, UrlUsageType } from "../common/maps/map.data";
 import { DownloadData } from "../common/download";
 
 export const downloadOptions = {
@@ -41,9 +41,11 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
 
       console.log(`Downloading images: ${(progress * 100).toFixed(2)}%, x=${x}/${maxX}, y=${y}/${maxY}`);
 
-      const url = getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType);
+      const url = await getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType);
       try {
-        const response = await fetch(url); //, { responseType: "arraybuffer" });
+        const headers = map.getDownloaderHeaders ? map.getDownloaderHeaders() : {};
+
+        const response = await fetch(url, headers); //, { responseType: "arraybuffer" });
         const arrayBuffer = await response.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         const img1 = await map.decode(request.mapType, buffer);
@@ -87,7 +89,6 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
     });
 };
 
-const getTileUrl = (map: MapData, zoomLevel: number, row: number, col: number, mapType: string) => {
-  // console.log(map.urlProvider(mapType, zoomLevel, row, col));
-  return map.urlProvider(mapType, zoomLevel, row, col);
+const getTileUrl = async (map: MapData, zoomLevel: number, row: number, col: number, mapType: string) => {
+  return await map.urlProvider(UrlUsageType.DOWNLOAD, mapType, zoomLevel, row, col);
 };

@@ -48,6 +48,7 @@ import { isProduction } from "../utils";
 import { openDownloadDialog } from "./DownloadDialog.vue";
 import { useMapStore } from "../store/map-store";
 import { MapData, maps } from "../../../common/maps/map.data";
+import { ipcRenderer } from "electron";
 
 export default defineComponent({
   name: "ControlsPane",
@@ -65,6 +66,8 @@ export default defineComponent({
       },
       set(newValue: MapData) {
         store.setMap(newValue);
+
+        ipcRenderer.send("set-referer", newValue.referer);
       },
     });
 

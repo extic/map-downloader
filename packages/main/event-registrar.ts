@@ -1,5 +1,7 @@
 import { BrowserWindow, ipcMain, App } from "electron";
 import { downloadMap, downloadOptions } from "./downloader";
+import { handleHttpRequest } from "./http-request.service";
+import { setReferrer } from "./main-store";
 
 export const eventRegistrar = {
   registerEvents: (win: BrowserWindow, app: App) => {
@@ -14,5 +16,11 @@ export const eventRegistrar = {
     ipcMain.on("get-app-version", () => {
       win.webContents.send("app-version", app.getVersion());
     });
+
+    ipcMain.on("set-referer", (event, arg) => {
+      setReferrer(arg);
+    });
+
+    ipcMain.handle('http:request', handleHttpRequest);
   },
 };

@@ -26,3 +26,4 @@ If you like this application, I would very much appriciate your donation as it g
 - Tel Aviv - https://gisn.tel-aviv.gov.il/iView2js4/index.aspx
 - Haifa - https://gis.haifa.muni.il/haifa_html5/
 - Hod Hasharon - https://v5.gis-net.co.il/v5/Hod_Hasharon
+- Mapy - https://en.mapy.cz/

@@ -1,7 +1,8 @@
-import { app, BrowserWindow, shell,ipcMain } from 'electron'
+import { app, BrowserWindow, shell,ipcMain, session } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 import { eventRegistrar } from "./event-registrar";
+import { getReferrer } from './main-store';
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -28,7 +29,7 @@ async function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
-  })
+  });
 
   win.menuBarVisible = false;
 
@@ -54,6 +55,14 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+
+  const filter = {
+    urls: []
+  }
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    details.requestHeaders['Referer'] = getReferrer() ?? "";
+    callback({cancel: false, requestHeaders: details.requestHeaders});
+  });
 
   eventRegistrar.registerEvents(win, app);
 }

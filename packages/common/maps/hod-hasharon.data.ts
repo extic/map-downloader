@@ -1,12 +1,12 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData } from "./map.data";
+import { MapData, UrlUsageType } from "./map.data";
 
 export const mapDataHodHasharon: MapData = {
   name: "Hod Hasharon",
 
-  urlProvider: (mapType: string, zoomLevel: number, row: number, col: number): string => {
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
     let zoomLevelStr = (zoomLevel + 3).toString();
     const rowStr = row.toString();
     const colStr = col.toString();
@@ -27,6 +27,10 @@ export const mapDataHodHasharon: MapData = {
   },
 
   supportedMapTypes: ["Satellite", "Street & Buildings"],
+
+  showScale: true,
+
+  referer: undefined,
 
   zoomLayers: [
     {

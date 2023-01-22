@@ -230,7 +230,6 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.3em;
 
     .vertical-item {
       white-space: pre;

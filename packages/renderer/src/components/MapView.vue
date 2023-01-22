@@ -9,7 +9,7 @@
       <div>Zoom:</div>
       <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
       <div class="gap">Scale:</div>
-      <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
+      <span>1:{{ selectedMap.zoomLayers(mapType)[zoomLevel].scale }}</span>
     </div>
     <div class="app-version">
       Version: v{{store.appVersion}}
@@ -65,7 +65,7 @@ export default defineComponent({
     const updateTiles = () => {
       const selectedMap = store.map;
       const zoomLayers = store.map.zoomLayers;
-      const layer = zoomLayers[zoomLevel.value];
+      const layer = zoomLayers(mapType.value)[zoomLevel.value];
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
       const tilesX = Math.ceil(mapWidth / 256) + 2;
@@ -141,7 +141,7 @@ export default defineComponent({
 
     const updateDownloadData = () => {
       const zoomLayers = store.map.zoomLayers;
-      const layer = zoomLayers[zoomLevel.value];
+      const layer = zoomLayers(mapType.value)[zoomLevel.value];
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
 

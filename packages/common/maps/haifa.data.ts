@@ -1,7 +1,7 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData } from "./map.data";
+import { MapData, ZoomLayer } from "./map.data";
 
 export const mapDataHaifa: MapData = {
   name: "Haifa",
@@ -18,12 +18,7 @@ export const mapDataHaifa: MapData = {
   },
 
   zoomFactorProvider: (zoomLevel: number, zoomIn: boolean): number => {
-    if (
-      (zoomLevel === 0 && zoomIn) ||
-      (zoomLevel === 1 && !zoomIn) ||
-      (zoomLevel === 5 && zoomIn) ||
-      (zoomLevel === 6 && !zoomIn)
-    ) {
+    if ((zoomLevel === 0 && zoomIn) || (zoomLevel === 1 && !zoomIn) || (zoomLevel === 5 && zoomIn) || (zoomLevel === 6 && !zoomIn)) {
       return 1.5;
       // } else if (((zoomLevel === 3 || zoomLevel === 6) && zoomIn) || ((zoomLevel === 4 || zoomLevel === 7) && !zoomIn)) {
       //   return 2.5;
@@ -33,8 +28,7 @@ export const mapDataHaifa: MapData = {
       return 1.33;
     } else if ((zoomLevel === 7 && zoomIn) || (zoomLevel === 8 && !zoomIn)) {
       return 2.5;
-    } else
-    return 2;
+    } else return 2;
   },
 
   decode: async (mapType: string, buffer: Buffer): Promise<Bitmap> => {
@@ -43,76 +37,78 @@ export const mapDataHaifa: MapData = {
 
   supportedMapTypes: ["Satellite"],
 
-  zoomLayers: [
-    {
-      scale: 0,
-      centerTileX: 1103,
-      centerTileY: 1254,
-      centerTileOffsetX: 30,
-      centerTileOffsetY: 88,
-    },
-    {
-      scale: 1,
-      centerTileX: 1654,
-      centerTileY: 1881,
-      centerTileOffsetX: 178,
-      centerTileOffsetY: 134,
-    },
-    {
-      scale: 2,
-      centerTileX: 3309,
-      centerTileY: 3763,
-      centerTileOffsetX: 98,
-      centerTileOffsetY: 11,
-    },
-    {
-      scale: 3,
-      centerTileX: 6618,
-      centerTileY: 7526,
-      centerTileOffsetX: 199,
-      centerTileOffsetY: 27,
-    },
-    {
-      scale: 4,
-      centerTileX: 8273,
-      centerTileY: 9407,
-      centerTileOffsetX: 118,
-      centerTileOffsetY: 165,
-    },
-    {
-      scale: 5,
-      centerTileX: 11031,
-      centerTileY: 12543,
-      centerTileOffsetX: 72,
-      centerTileOffsetY: 137,
-    },
-    {
-      scale: 6,
-      centerTileX: 16546,
-      centerTileY: 18815,
-      centerTileOffsetX: 237,
-      centerTileOffsetY: 77,
-    },
-    {
-      scale: 7,
-      centerTileX: 33093,
-      centerTileY: 37630,
-      centerTileOffsetX: 216,
-      centerTileOffsetY: 155,
-    },
-    {
-      scale: 8,
-      centerTileX: 82734,
-      centerTileY: 94076,
-      centerTileOffsetX: 154,
-      centerTileOffsetY: 130,
-    },
-    {
-      scale: 9,
-      centerTileX: 165469,
-      centerTileY: 188153,
-      centerTileOffsetX: 51,
-      centerTileOffsetY: 5,
-    },
-  ],
+  zoomLayers: (mapType: string): ZoomLayer[] => {
+    return [
+      {
+        scale: 0,
+        centerTileX: 1103,
+        centerTileY: 1254,
+        centerTileOffsetX: 30,
+        centerTileOffsetY: 88,
+      },
+      {
+        scale: 1,
+        centerTileX: 1654,
+        centerTileY: 1881,
+        centerTileOffsetX: 178,
+        centerTileOffsetY: 134,
+      },
+      {
+        scale: 2,
+        centerTileX: 3309,
+        centerTileY: 3763,
+        centerTileOffsetX: 98,
+        centerTileOffsetY: 11,
+      },
+      {
+        scale: 3,
+        centerTileX: 6618,
+        centerTileY: 7526,
+        centerTileOffsetX: 199,
+        centerTileOffsetY: 27,
+      },
+      {
+        scale: 4,
+        centerTileX: 8273,
+        centerTileY: 9407,
+        centerTileOffsetX: 118,
+        centerTileOffsetY: 165,
+      },
+      {
+        scale: 5,
+        centerTileX: 11031,
+        centerTileY: 12543,
+        centerTileOffsetX: 72,
+        centerTileOffsetY: 137,
+      },
+      {
+        scale: 6,
+        centerTileX: 16546,
+        centerTileY: 18815,
+        centerTileOffsetX: 237,
+        centerTileOffsetY: 77,
+      },
+      {
+        scale: 7,
+        centerTileX: 33093,
+        centerTileY: 37630,
+        centerTileOffsetX: 216,
+        centerTileOffsetY: 155,
+      },
+      {
+        scale: 8,
+        centerTileX: 82734,
+        centerTileY: 94076,
+        centerTileOffsetX: 154,
+        centerTileOffsetY: 130,
+      },
+      {
+        scale: 9,
+        centerTileX: 165469,
+        centerTileY: 188153,
+        centerTileOffsetX: 51,
+        centerTileOffsetY: 5,
+      },
+    ];
+  },
 };

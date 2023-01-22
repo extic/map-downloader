@@ -19,7 +19,7 @@ export type MapData = {
   zoomFactorProvider: (zoomLevel: number, zoomIn: boolean) => number,
   decode: (mapType: string, buffer: Buffer) => Promise<Bitmap>
   supportedMapTypes: string[],
-  zoomLayers: ZoomLayer[];
+  zoomLayers: (mapType: string) => ZoomLayer[];
 }
 
 export const maps = [

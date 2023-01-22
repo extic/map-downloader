@@ -1,7 +1,7 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData } from "./map.data";
+import { MapData, ZoomLayer } from "./map.data";
 
 export const mapDataGalilTahton: MapData = {
   name: "Galil Tahton",
@@ -25,62 +25,64 @@ export const mapDataGalilTahton: MapData = {
 
   supportedMapTypes: ["Satellite"],
 
-  zoomLayers: [
-    {
-      scale: 32000,
-      centerTileX: 8,
-      centerTileY: 7,
-      centerTileOffsetX: 117,
-      centerTileOffsetY: 61,
-    },
-    {
-      scale: 16000,
-      centerTileX: 16,
-      centerTileY: 14,
-      centerTileOffsetX: 234,
-      centerTileOffsetY: 122,
-    },
-    {
-      scale: 8000,
-      centerTileX: 33,
-      centerTileY: 28,
-      centerTileOffsetX: 213,
-      centerTileOffsetY: 247,
-    },
-    {
-      scale: 4000,
-      centerTileX: 67,
-      centerTileY: 57,
-      centerTileOffsetX: 171,
-      centerTileOffsetY: 239,
-    },
-    {
-      scale: 2000,
-      centerTileX: 135,
-      centerTileY: 115,
-      centerTileOffsetX: 87,
-      centerTileOffsetY: 219,
-    },
-    {
-      scale: 1000,
-      centerTileX: 270,
-      centerTileY: 231,
-      centerTileOffsetX: 179,
-      centerTileOffsetY: 190,
-    },
-    {
-      scale: 500,
-      centerTileX: 541,
-      centerTileY: 463,
-      centerTileOffsetX: 108,
-      centerTileOffsetY: 129,
-    },
-    {
-      scale: 250,
-      centerTileX: 1082,
-      centerTileY: 927,
-      centerTileOffsetX: 219,
-      centerTileOffsetY: 5,
-    }
-  ],
+  zoomLayers: (mapType: string): ZoomLayer[] => {
+    return [
+      {
+        scale: 32000,
+        centerTileX: 8,
+        centerTileY: 7,
+        centerTileOffsetX: 117,
+        centerTileOffsetY: 61,
+      },
+      {
+        scale: 16000,
+        centerTileX: 16,
+        centerTileY: 14,
+        centerTileOffsetX: 234,
+        centerTileOffsetY: 122,
+      },
+      {
+        scale: 8000,
+        centerTileX: 33,
+        centerTileY: 28,
+        centerTileOffsetX: 213,
+        centerTileOffsetY: 247,
+      },
+      {
+        scale: 4000,
+        centerTileX: 67,
+        centerTileY: 57,
+        centerTileOffsetX: 171,
+        centerTileOffsetY: 239,
+      },
+      {
+        scale: 2000,
+        centerTileX: 135,
+        centerTileY: 115,
+        centerTileOffsetX: 87,
+        centerTileOffsetY: 219,
+      },
+      {
+        scale: 1000,
+        centerTileX: 270,
+        centerTileY: 231,
+        centerTileOffsetX: 179,
+        centerTileOffsetY: 190,
+      },
+      {
+        scale: 500,
+        centerTileX: 541,
+        centerTileY: 463,
+        centerTileOffsetX: 108,
+        centerTileOffsetY: 129,
+      },
+      {
+        scale: 250,
+        centerTileX: 1082,
+        centerTileY: 927,
+        centerTileOffsetX: 219,
+        centerTileOffsetY: 5,
+      },
+    ];
+  },
 };

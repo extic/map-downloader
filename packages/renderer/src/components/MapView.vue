@@ -108,6 +108,8 @@ export default defineComponent({
           if (oldMap !== newMap) {
             store.resetCropArea();
             updateDownloadData();
+          } else if (newMapType !== oldMapType) {
+            updateDownloadData();
           }
 
           instance!.proxy!.$forceUpdate();

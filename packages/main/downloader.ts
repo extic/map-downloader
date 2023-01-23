@@ -3,12 +3,12 @@ import * as fs from "fs";
 import { BrowserWindow } from "electron";
 import crypto from "crypto";
 import fetch from "electron-fetch";
-import { MapData, maps, UrlUsageType } from "../common/maps/map.data";
+import { MapData, maps, UrlResult, UrlUsageType } from "../common/maps/map.data";
 import { DownloadData } from "../common/download";
 
 export const downloadOptions = {
   canceled: false,
-}
+};
 
 export const downloadMap = async (win: BrowserWindow, request: DownloadData) => {
   if (!request) {
@@ -41,23 +41,25 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
 
       console.log(`Downloading images: ${(progress * 100).toFixed(2)}%, x=${x}/${maxX}, y=${y}/${maxY}`);
 
-      const url = await getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType);
+      const { url, unsupported } = await getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType);
       try {
-        const headers = map.getDownloaderHeaders ? map.getDownloaderHeaders() : {};
+        if (!unsupported) {
+          const headers = map.getDownloaderHeaders ? map.getDownloaderHeaders() : {};
 
-        const response = await fetch(url, headers); //, { responseType: "arraybuffer" });
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const img1 = await map.decode(request.mapType, buffer);
-        const ctx = img1.getContext("2d");
-        let imageData = ctx.getImageData(0, 0, 256, 256);
-        for (let j = 0; j < 256; j++) {
-          const posY = j + y * 256 - request.startY;
-          if (posY >= 0) {
-            for (let i = 0; i < 256; i++) {
-              const posX = i + x * 256 - request.startX;
-              if (posX >= 0) {
-                overallCtx.fillPixelWithColor(posX, posY, imageData.getPixelRGBA(i, j));
+          const response = await fetch(url, headers); //, { responseType: "arraybuffer" });
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const img1 = await map.decode(request.mapType, buffer);
+          const ctx = img1.getContext("2d");
+          let imageData = ctx.getImageData(0, 0, 256, 256);
+          for (let j = 0; j < 256; j++) {
+            const posY = j + y * 256 - request.startY;
+            if (posY >= 0) {
+              for (let i = 0; i < 256; i++) {
+                const posX = i + x * 256 - request.startX;
+                if (posX >= 0) {
+                  overallCtx.fillPixelWithColor(posX, posY, imageData.getPixelRGBA(i, j));
+                }
               }
             }
           }
@@ -89,6 +91,6 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
     });
 };
 
-const getTileUrl = async (map: MapData, zoomLevel: number, row: number, col: number, mapType: string) => {
+const getTileUrl = async (map: MapData, zoomLevel: number, row: number, col: number, mapType: string): Promise<UrlResult> => {
   return await map.urlProvider(UrlUsageType.DOWNLOAD, mapType, zoomLevel, row, col);
 };

@@ -1,16 +1,16 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData, UrlUsageType } from "./map.data";
+import { MapData, UrlResult, UrlUsageType } from "./map.data";
 
 export const mapDataHaifa: MapData = {
   name: "Haifa",
 
-  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     let zoomLevelStr = zoomLevel.toString();
     const rowStr = row.toString();
     const colStr = col.toString();
-    return `https://gisserver.haifa.muni.il/arcgiswebadaptor/rest/services/Orthophoto_202204/MapServer/tile/${zoomLevelStr}/${rowStr}/${colStr}?blankTile=false`;
+    return { url: `https://gisserver.haifa.muni.il/arcgiswebadaptor/rest/services/Orthophoto_202204/MapServer/tile/${zoomLevelStr}/${rowStr}/${colStr}?blankTile=false` };
   },
 
   zoomLevelProvider: (zoomLevel: number): string => {

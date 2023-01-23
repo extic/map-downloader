@@ -1,8 +1,8 @@
 <template>
   <div ref="map" class="map-view" v-draggable="{ dragged }" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
-      <img :src="tile.url" @error="noTileImage($event)" alt="map tile" referrerpolicy="origin"/>
-      <!-- <div style="position: absolute; top: 2px; left: 2px; color: white">{{tile.col}} : {{tile.row}}</div> -->
+      <img v-if="!tile.unsupported" :src="tile.url" @error="noTileImage($event)" alt="map tile" referrerpolicy="origin"/>
+      <img v-else src="../assets/images/unsupported.png"/>
     </div>
     <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
     <div class="map-info">
@@ -33,6 +33,7 @@ interface TileData {
   readonly url: string;
   readonly row: number;
   readonly col: number;
+  readonly unsupported?: boolean;
 }
 
 export default defineComponent({
@@ -85,8 +86,8 @@ export default defineComponent({
         for (let i = 0; i < tilesX; i++) {
           const col = layer.centerTileX + Math.floor(store.posLeft / 256) - Math.floor(tilesX / 2) + i + 1;
           const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX + 256;
-          const url = await selectedMap.urlProvider(UrlUsageType.VIEW, mapType.value, zoomLevel.value, row, col);
-          tiles.value.push({ left, top, url, row, col });
+          const { url, unsupported } = await selectedMap.urlProvider(UrlUsageType.VIEW, mapType.value, zoomLevel.value, row, col);
+          tiles.value.push({ left, top, url, row, col, unsupported });
         }
       }
     };

@@ -1,16 +1,16 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData, UrlUsageType } from "./map.data";
+import { MapData, UrlResult, UrlUsageType } from "./map.data";
 
 export const mapDataTelAviv: MapData = {
   name: "Tel-Aviv",
 
-  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     let zoomLevelStr = zoomLevel + 13;
     const rowStr = row.toString(10);
     const colStr = col.toString(10);
-    return `https://gisn.tel-aviv.gov.il/arcgis/rest/services/WM/IView2Ortho2021WM/MapServer/tile/${zoomLevelStr}/${rowStr}/${colStr}?blankTile=false`
+    return { url: `https://gisn.tel-aviv.gov.il/arcgis/rest/services/WM/IView2Ortho2021WM/MapServer/tile/${zoomLevelStr}/${rowStr}/${colStr}?blankTile=false` };
   },
 
   zoomLevelProvider: (zoomLevel: number): string => {

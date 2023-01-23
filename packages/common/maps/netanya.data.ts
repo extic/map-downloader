@@ -1,17 +1,17 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData, UrlUsageType } from "./map.data";
+import { MapData, UrlResult, UrlUsageType } from "./map.data";
 
 export const mapDataNetanya: MapData = {
   name: "Netanya",
 
-  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     let zoomLevelStr = (zoomLevel + 3).toString();
     const rowStr = row.toString();
     const colStr = col.toString();
     const mapTypeStr = mapType === "Satellite" ? "Netanya_2022_November:2022_November" : "Netanya_SHP:Netanya_Reka";
-    return `https://v5.gis-net.co.il/proxy/proxy.ashx?http://10.237.72.71:8080/geoserver/gwc/service/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=${mapTypeStr}&STYLE=raster&FORMAT=image/jpeg&TILEMATRIXSET=Netanya&TILEMATRIX=Netanya:${zoomLevelStr}&TILEROW=${rowStr}&TILECOL=${colStr}`
+    return { url: `https://v5.gis-net.co.il/proxy/proxy.ashx?http://10.237.72.71:8080/geoserver/gwc/service/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=${mapTypeStr}&STYLE=raster&FORMAT=image/jpeg&TILEMATRIXSET=Netanya&TILEMATRIX=Netanya:${zoomLevelStr}&TILEROW=${rowStr}&TILECOL=${colStr}` };
   },
 
   zoomLevelProvider: (zoomLevel: number): string => {

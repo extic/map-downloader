@@ -20,9 +20,14 @@ export enum UrlUsageType {
   DOWNLOAD,
 }
 
+export type UrlResult = {
+  url: string;
+  unsupported?: boolean;
+}
+
 export type MapData = {
   name: string;
-  urlProvider: (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number) => Promise<string>;
+  urlProvider: (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number) => Promise<UrlResult>;
   getDownloaderHeaders?: () => any,
   zoomLevelProvider: (zoomLevel: number) => string,
   zoomFactorProvider: (zoomLevel: number, zoomIn: boolean) => number,

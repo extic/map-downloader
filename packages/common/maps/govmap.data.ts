@@ -1,18 +1,22 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData, UrlUsageType } from "./map.data";
+import { MapData, UrlResult, UrlUsageType, ZoomLayer } from "./map.data";
 
 export const mapDataGovMap: MapData = {
   name: "GovMap",
 
-  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
-    let zoomLevelStr = zoomLevel.toString(10).padStart(2, "0");
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
+    if (mapType === "1:25000" && (zoomLevel < 5 || zoomLevel > 9)) {
+      return { url: "", unsupported: true };
+    }
+    let zoomLevelStr = (mapType === "1:25000" ? zoomLevel - 5 : zoomLevel).toString(10).padStart(2, "0");
     const rowStr = row.toString(16).padStart(8, "0");
     const colStr = col.toString(16).padStart(8, "0");
-    const mapTypeStr = mapType === "Satellite" ? "020522B0B20R" : "B0B2309BNTL";
+    const mapTypeStr = mapType === "Satellite" ? "020522B0B20R" : mapType === "Street & Buildings" ? "B0B2309BNTL" : "11072021MAP25K";
     const suffix = mapType === "Satellite" ? "jpg" : "png";
-    return `https://cdn.govmap.gov.il/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}`;
+    const domain = mapType === "1:25000" ? "cdnil.govmap.gov.il" : "cdn.govmap.gov.il";
+    return { url: `https://${domain}/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}` };
   },
 
   zoomLevelProvider: (zoomLevel: number): string => {
@@ -29,12 +33,10 @@ export const mapDataGovMap: MapData = {
   },
 
   decode: async (mapType: string, buffer: Buffer): Promise<Bitmap> => {
-    return await (mapType === "Satellite"
-          ? pimage.decodeJPEGFromStream(Readable.from(buffer))
-          : pimage.decodePNGFromStream(Readable.from(buffer)));
+    return await (mapType === "Satellite" ? pimage.decodeJPEGFromStream(Readable.from(buffer)) : pimage.decodePNGFromStream(Readable.from(buffer)));
   },
 
-  supportedMapTypes: ["Satellite", "Street & Buildings"],
+  supportedMapTypes: ["Satellite", "Street & Buildings", "1:25000"],
 
   showScale: true,
 

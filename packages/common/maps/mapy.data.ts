@@ -1,21 +1,14 @@
 import * as pimage from "pureimage";
 import { Bitmap } from "pureimage/types/bitmap";
 import { Readable } from "stream";
-import { MapData, UrlUsageType } from "./map.data";
+import { MapData, UrlResult, UrlUsageType } from "./map.data";
 
 export const mapDataMapy: MapData = {
   name: "Mapy",
 
-  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<string> => {
-    // if (usageType === UrlUsageType.VIEW) {
-    //   return `https://mapserver.mapy.cz/base-en/${zoomLevel + 7}-${col}-${row}`;
-    // }
-
-    if (mapType === "Street") {
-      return `https://mapserver.mapy.cz/base-en/${zoomLevel + 7}-${col}-${row}`;
-    } else {
-      return `https://mapserver.mapy.cz/bing/${zoomLevel + 7}-${col}-${row}`;
-    }
+  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
+    const sourceType = mapType === "Street" ? "base-en" : "bing";
+    return { url: `https://mapserver.mapy.cz/${sourceType}/${zoomLevel + 7}-${col}-${row}` };
   },
 
   getDownloaderHeaders: () => {

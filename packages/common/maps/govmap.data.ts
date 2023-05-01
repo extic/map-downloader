@@ -13,9 +13,9 @@ export const mapDataGovMap: MapData = {
     let zoomLevelStr = (mapType === "1:25000" ? zoomLevel - 5 : zoomLevel).toString(10).padStart(2, "0");
     const rowStr = row.toString(16).padStart(8, "0");
     const colStr = col.toString(16).padStart(8, "0");
-    const mapTypeStr = mapType === "Satellite" ? "020522B0B20R" : mapType === "Street & Buildings" ? "B0B2309BNTL" : "11072021MAP25K";
+    const mapTypeStr = mapType === "Satellite" ? "M2023ORT3TS" : mapType === "Street & Buildings" ? "BNTL2023Q1" : "022023MAP25KTO";
     const suffix = mapType === "Satellite" ? "jpg" : "png";
-    const domain = mapType === "1:25000" ? "cdnil.govmap.gov.il" : "cdn.govmap.gov.il";
+    const domain = "cdn.govmap.gov.il";
     return { url: `https://${domain}/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}` };
   },
 

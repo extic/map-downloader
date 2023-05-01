@@ -1,7 +1,7 @@
 {
   "name": "map-downloader",
   "productName": "MapDownloader",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/main/index.cjs",
   "author": "Barak Levinson",
   "license": "MIT",

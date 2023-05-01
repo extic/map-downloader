@@ -6,6 +6,8 @@ import { MapData, UrlResult, UrlUsageType } from "./map.data";
 export const mapDataNetanya: MapData = {
   name: "Netanya",
 
+  init: async () => {},
+
   urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     let zoomLevelStr = (zoomLevel + 3).toString();
     const rowStr = row.toString();
@@ -97,4 +99,12 @@ export const mapDataNetanya: MapData = {
       centerTileOffsetY: 90,
     },
   ],
+
+  showCoordinates: false,
+
+  coordinateProvider: undefined,
+
+  supportLayer: () => false,
+
+  layerUrlProvider: undefined,
 };

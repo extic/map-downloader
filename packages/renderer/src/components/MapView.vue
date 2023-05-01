@@ -1,31 +1,25 @@
 <template>
   <div ref="map" class="map-view" v-draggable="{ dragged }" @wheel="zoom($event)">
-    <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
+    <div v-for="tile in tiles" :key="`${tile.indexX}:${tile.indexY}`" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile" @mousemove="mouseMoved($event, tile)">
       <img v-if="!tile.unsupported" :src="tile.url" @error="noTileImage($event)" alt="map tile" referrerpolicy="origin"/>
       <img v-else src="../assets/images/unsupported.png"/>
     </div>
+    <img v-if="layerUrl" class="layer-image" :src="layerUrl"/>
     <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
-    <div class="map-info">
-      <div>Zoom:</div>
-      <span>{{ selectedMap.zoomLevelProvider(zoomLevel) }}</span>
-      <div class="scale" v-if="selectedMap.showScale">
-        <div class="gap">Scale:</div>
-        <span>1:{{ selectedMap.zoomLayers[zoomLevel].scale }}</span>
-      </div>
-    </div>
-    <div class="app-version">
-      Version: v{{store.appVersion}}
-    </div>
+    <map-info/>
+    <app-version/>
     <div class="crop-too-small" v-if="store.showCrop && isCropAreaTooSmall">Crop area too small to show - either zoom in or reset</div>
   </div>
 
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, onBeforeUpdate, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, getCurrentInstance, onMounted, ref, watch } from "vue";
 import { useMapStore } from "../store/map-store";
 import CropArea from "./CropArea.vue";
-import { MapData, UrlUsageType } from "../../../common/maps/map.data";
+import AppVersion from "./AppVersion.vue";
+import MapInfo from "./MapInfo.vue";
+import { UrlUsageType, Coordinates } from "../../../common/maps/map.data";
 
 interface TileData {
   readonly left: number;
@@ -34,30 +28,21 @@ interface TileData {
   readonly row: number;
   readonly col: number;
   readonly unsupported?: boolean;
+  readonly indexX: number;
+  readonly indexY: number;
 }
 
 export default defineComponent({
   name: "MapView",
 
-  components: { CropArea },
+  components: { CropArea, AppVersion, MapInfo },
 
   setup() {
     const store = useMapStore();
 
     const tiles = ref([] as TileData[]);
     const map = ref(null as HTMLDivElement | null);
-
-    const selectedMap = computed(() => {
-      return store.map;
-    });
-
-    const mapType = computed(() => {
-      return store.mapType;
-    });
-
-    const zoomLevel = computed(() => {
-      return store.zoomLevel;
-    });
+    const layerUrl = ref<string | undefined>(undefined);
 
     const isCropAreaTooSmall = computed(() => {
       return store.cropWidth < 50 || store.cropHeight < 50;
@@ -67,29 +52,66 @@ export default defineComponent({
       return ((n % m) + m) % m;
     };
 
+    let layerTimeoutHandle: NodeJS.Timeout | undefined = undefined;
+
     const updateTiles = async () => {
       const selectedMap = store.map;
       const zoomLayers = store.map.zoomLayers;
-      const layer = zoomLayers[zoomLevel.value];
+      const layer = zoomLayers[store.zoomLevel];
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
-      const tilesX = Math.ceil(mapWidth / 256) + 2;
-      const tilesY = Math.ceil(mapHeight / 256) + 2;
+      const tilesX = Math.ceil(mapWidth / 256) + 1;
+      const tilesY = Math.ceil(mapHeight / 256) + 1;
 
       const modPosX = mod(store.posLeft, 256);
       const modPosY = mod(store.posTop, 256);
 
-      tiles.value = [];
+      let startLeft = Math.ceil(mapWidth / 2) - layer.centerTileOffsetX - modPosX;
+      let startIndexX =  Math.floor(store.posLeft / 256);
+      while (startLeft > 0) {
+        startLeft -= 256;
+        startIndexX--;
+      }
+      let startTop = Math.ceil(mapHeight / 2) - layer.centerTileOffsetY - modPosY;
+      let startIndexY =  Math.floor(store.posTop / 256);
+      while (startTop > 0) {
+        startTop -= 256;
+        startIndexY--;
+      }
+
+      const newTiles: TileData[] = [];
       for (let j = 0; j < tilesY; j++) {
-        const row = layer.centerTileY + Math.floor(store.posTop / 256) - Math.floor(tilesY / 2) + j + 1;
-        const top = Math.floor(mapHeight / 2) - layer.centerTileOffsetY - (Math.floor(tilesY / 2) - j) * 256 - modPosY + 256;
+        const indexY = startIndexY + j;
+        const row = layer.centerTileY + indexY;
+        const top = startTop + j * 256;
         for (let i = 0; i < tilesX; i++) {
-          const col = layer.centerTileX + Math.floor(store.posLeft / 256) - Math.floor(tilesX / 2) + i + 1;
-          const left = Math.floor(mapWidth / 2) - layer.centerTileOffsetX - (Math.floor(tilesX / 2) - i) * 256 - modPosX + 256;
-          const { url, unsupported } = await selectedMap.urlProvider(UrlUsageType.VIEW, mapType.value, zoomLevel.value, row, col);
-          tiles.value.push({ left, top, url, row, col, unsupported });
+          const indexX = startIndexX + i;
+          const col = layer.centerTileX + indexX;
+          const left = startLeft + i * 256;
+          const { url, unsupported } = await selectedMap.urlProvider(UrlUsageType.VIEW, store.mapType, store.zoomLevel, row, col);
+          newTiles.push({ left, top, url, row, col, unsupported, indexX, indexY });
         }
       }
+
+      tiles.value = newTiles;
+
+      handleShowElevationLines();
+    };
+
+    const handleShowElevationLines = () => {
+      if (layerTimeoutHandle) {
+        clearTimeout(layerTimeoutHandle);
+      }
+      layerTimeoutHandle = setTimeout(() => {
+        if (store.showElevationLines) {
+          const selectedMap = store.map;
+          const mapWidth = map.value!.clientWidth;
+          const mapHeight = map.value!.clientHeight;
+          layerUrl.value = selectedMap.layerUrlProvider?.(selectedMap.zoomLayers[store.zoomLevel], mapWidth, mapHeight, store.posLeft, store.posTop) || undefined;
+        } else {
+          layerUrl.value = undefined;
+        }
+      }, 1000);
     };
 
     const updateMapDimensions = () => {
@@ -132,8 +154,19 @@ export default defineComponent({
 
       watch(
         () => [store.zoomLevel, store.posLeft, store.posTop, store.map, store.mapType],
-        async () => {
+        async ([newZoomLevel], [oldZoomLevel]) => {
+          if (newZoomLevel !== oldZoomLevel) {
+            tiles.value = [];
+          }
+          layerUrl.value = undefined;
           await updateTiles();
+        }
+      );
+
+      watch(
+        () => [store.showElevationLines],
+        () => {
+          handleShowElevationLines();
         }
       );
 
@@ -153,7 +186,7 @@ export default defineComponent({
 
     const updateDownloadData = () => {
       const zoomLayers = store.map.zoomLayers;
-      const layer = zoomLayers[zoomLevel.value];
+      const layer = zoomLayers[store.zoomLevel];
       const mapWidth = map.value!.clientWidth;
       const mapHeight = map.value!.clientHeight;
 
@@ -178,10 +211,11 @@ export default defineComponent({
     const instance = getCurrentInstance();
 
     const zoom = (event: WheelEvent) => {
+      const selectedMap = store.map;
       const zoomIn = event.deltaY < 0;
-      let zoom = zoomLevel.value + (zoomIn ? 1 : -1);
-      if (zoom >= 0 && zoom <= selectedMap.value.zoomLayers.length - 1) {
-        let factor = selectedMap.value.zoomFactorProvider(zoomLevel.value, zoomIn);
+      let zoom = store.zoomLevel + (zoomIn ? 1 : -1);
+      if (zoom >= 0 && zoom <= selectedMap.zoomLayers.length - 1) {
+        let factor = selectedMap.zoomFactorProvider(store.zoomLevel, zoomIn);
         if (!zoomIn) {
           factor = 1 / factor;
         }
@@ -207,7 +241,30 @@ export default defineComponent({
       e.path[0].classList.add("hidden");
     };
 
-    return { store, tiles, map, dragged, zoom, noTileImage, mapType, selectedMap, zoomLevel, isCropAreaTooSmall };
+    const mouseMoved = (event: MouseEvent, tile: TileData) => {
+      const selectedMap = store.map;
+      if (selectedMap.showCoordinates) {
+        const zoomLayer = selectedMap.zoomLayers[store.zoomLevel];
+        const pixelCoordinates: Coordinates = {
+          x: event.offsetX + tile.indexX * 256 - zoomLayer.centerTileOffsetX,
+          y: event.offsetY + tile.indexY * 256 - zoomLayer.centerTileOffsetY,
+        };
+        const coordinates = selectedMap.coordinateProvider!!(zoomLayer, pixelCoordinates);
+        store.setCoordinates(Math.round(coordinates.x), Math.round(coordinates.y));
+      }
+    };
+
+    return {
+      store,
+      tiles,
+      map,
+      dragged,
+      zoom,
+      noTileImage,
+      isCropAreaTooSmall,
+      mouseMoved,
+      layerUrl,
+    };
   },
 });
 </script>
@@ -231,41 +288,6 @@ export default defineComponent({
     }
   }
 
-  .map-info {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    border: 1px solid gray;
-    border-radius: 0 10px 0 0;
-    color: white;
-    padding: 0.2em 2em;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-bottom: 0;
-    border-left: 0;
-
-    .gap {
-      margin-left: 2em;
-    }
-
-    .scale {
-      display: flex;
-    }
-  }
-
-  .app-version {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    border: 1px solid gray;
-    border-radius: 10px 0 0 0;
-    color: white;
-    padding: 0.2em 2em;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-bottom: 0;
-    border-right: 0;
-  }
-
   .crop-too-small {
     position: absolute;
     top: 0;
@@ -277,6 +299,15 @@ export default defineComponent({
     border: 1px solid #d32929;
     border-top: none;
     border-radius: 0 0 10px 10px;
+  }
+
+  .layer-image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
   }
 }
 </style>

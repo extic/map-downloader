@@ -6,6 +6,8 @@ import { MapData, UrlResult, UrlUsageType } from "./map.data";
 export const mapDataTelAviv: MapData = {
   name: "Tel-Aviv",
 
+  init: async () => {},
+
   urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     let zoomLevelStr = zoomLevel + 13;
     const rowStr = row.toString(10);
@@ -96,4 +98,12 @@ export const mapDataTelAviv: MapData = {
       centerTileOffsetY: 51,
     },
   ],
+
+  showCoordinates: false,
+
+  coordinateProvider: undefined,
+
+  supportLayer: () => false,
+
+  layerUrlProvider: undefined,
 };

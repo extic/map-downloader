@@ -1,11 +1,19 @@
 <template>
   <div class="controls-pane">
     <div class="left-pane">
-      <div class="field">
-        <label>Source:</label>
-        <select v-model="selectedMap">
-          <option v-for="map in allMaps" :value="map">{{ map.name }}</option>
-        </select>
+      <div>
+        <div class="vertical">
+          <div class="field">
+            <label>Source:</label>
+            <select v-model="selectedMap">
+              <option v-for="map in allMaps" :value="map">{{ map.name }}</option>
+            </select>
+          </div>
+          <div class="field spacing" v-if="selectedMap.supportLayer?.(selectedMap.zoomLayers[zoomLevel]) || false">
+            <label>Show elevation lines</label>
+            <input type="checkbox" v-model="showElevationLines"/>
+          </div>
+        </div>
       </div>
       <div v-if="selectedMap.supportedMapTypes.length > 1" class="field">
         <div class="vertical">
@@ -71,6 +79,15 @@ export default defineComponent({
       },
     });
 
+    const showElevationLines = computed({
+      get(): boolean {
+        return store.showElevationLines;
+      },
+      set(newValue: boolean) {
+        store.setShowElevationLines(newValue);
+      },
+    });
+
     const mapType = computed({
       get(): string {
         return store.mapType;
@@ -113,18 +130,18 @@ export default defineComponent({
       }
 
       document.onkeydown = (event) => {
-        if (event.key === 'Control') {
+        if (event.key === "Control") {
           store.setDragMode("crop");
         }
       };
       document.onkeyup = (event) => {
-        if (event.key === 'Control') {
+        if (event.key === "Control") {
           store.setDragMode("map");
         }
       };
     });
 
-    return { store, toggleShowCrop, toggleDragMode, zoomLevel, download, donate, mapType, allMaps, selectedMap, resetCropArea };
+    return { store, toggleShowCrop, toggleDragMode, zoomLevel, download, donate, mapType, allMaps, selectedMap, resetCropArea, showElevationLines };
   },
 });
 </script>
@@ -272,6 +289,10 @@ export default defineComponent({
     &:hover {
       background-color: white;
     }
+  }
+
+  .spacing {
+    margin-top: 0.5em;
   }
 }
 </style>

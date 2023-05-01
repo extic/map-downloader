@@ -6,6 +6,8 @@ import { MapData, UrlResult, UrlUsageType } from "./map.data";
 export const mapDataHaifa: MapData = {
   name: "Haifa",
 
+  init: async () => {},
+
   urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     let zoomLevelStr = zoomLevel.toString();
     const rowStr = row.toString();
@@ -119,4 +121,12 @@ export const mapDataHaifa: MapData = {
       centerTileOffsetY: 5,
     },
   ],
+
+  showCoordinates: false,
+
+  coordinateProvider: undefined,
+
+  supportLayer: () => false,
+
+  layerUrlProvider: undefined,
 };

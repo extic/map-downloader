@@ -6,6 +6,8 @@ import { MapData, UrlResult, UrlUsageType } from "./map.data";
 export const mapDataMapy: MapData = {
   name: "Mapy",
 
+  init: async () => {},
+
   urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     const sourceType = mapType === "Street" ? "base-en" : "bing";
     return { url: `https://mapserver.mapy.cz/${sourceType}/${zoomLevel + 7}-${col}-${row}` };
@@ -130,4 +132,12 @@ export const mapDataMapy: MapData = {
       centerTileOffsetY: 212,
     },
   ],
+
+  showCoordinates: false,
+
+  coordinateProvider: undefined,
+
+  supportLayer: () => false,
+
+  layerUrlProvider: undefined,
 };

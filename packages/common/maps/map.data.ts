@@ -27,6 +27,7 @@ export type UrlResult = {
 
 export type MapData = {
   name: string;
+  init: () => void,
   urlProvider: (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number) => Promise<UrlResult>;
   getDownloaderHeaders?: () => any,
   zoomLevelProvider: (zoomLevel: number) => string,
@@ -35,7 +36,11 @@ export type MapData = {
   supportedMapTypes: string[],
   showScale: boolean,
   referer: string | undefined,
-  zoomLayers: ZoomLayer[];
+  zoomLayers: ZoomLayer[],
+  showCoordinates: boolean,
+  coordinateProvider: ((zoomLayer: ZoomLayer, pixelCoordinates: Coordinates) => Coordinates) | undefined,
+  supportLayer: (zoomLayer: ZoomLayer) => boolean,
+  layerUrlProvider: ((zoomLayer: ZoomLayer, mapWidth: number, mapHeight: number, posLeft: number, posTop: number) => string | undefined) | undefined,
 }
 
 export const maps = [
@@ -47,3 +52,8 @@ export const maps = [
   mapDataNetanya,
   mapDataMapy,
 ]
+
+export type Coordinates = {
+  x: number;
+  y: number;
+}

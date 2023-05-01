@@ -6,6 +6,9 @@ import { createPinia } from "pinia";
 import draggable from "./components/draggable.directive";
 import { useMapStore } from "./store/map-store";
 import { mapDataGovMap } from "../../common/maps/govmap.data";
+import { maps } from "../../common/maps/map.data";
+
+await Promise.all(maps.map((it) => it.init()));
 
 export const pinia = createPinia();
 

@@ -15,6 +15,8 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
     return;
   }
 
+  console.log(request);
+
   downloadOptions.canceled = false;
 
   const maxX = request.endCol - request.startCol + 1;

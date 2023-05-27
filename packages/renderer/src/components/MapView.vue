@@ -205,7 +205,13 @@ export default defineComponent({
         endY: mod(startY + store.cropHeight, 256),
         mapName: store.map.name,
         mapType: store.mapType,
+        layerMapWidth: store.cropWidth,
+        layerMapHeight: store.cropHeight,
+        layerStartX: store.posLeft - mapWidth / 2 + store.cropWidth / 2 + store.cropLeft,
+        layerStartY: store.posTop - mapHeight / 2 + store.cropHeight / 2 + store.cropTop,
       });
+
+      console.log(store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight);
     };
 
     const instance = getCurrentInstance();

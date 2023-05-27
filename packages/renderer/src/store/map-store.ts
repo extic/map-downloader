@@ -17,6 +17,10 @@ const resetDownloadData = (): DownloadData => ({
   endY: 0,
   mapName: '',
   mapType: '',
+  layerMapWidth: undefined,
+  layerMapHeight: undefined,
+  layerStartX: undefined,
+  layerStartY: undefined,
 });
 
 
@@ -120,6 +124,7 @@ export const useMapStore = defineStore("map", {
 
     setDownloadData(downloadData: DownloadData): void {
       this._downloadData = downloadData;
+      console.log("downloadData", downloadData);
 
       const tilesX = downloadData.endCol - downloadData.startCol + 1;
       const tilesY = downloadData.endRow - downloadData.startRow + 1;

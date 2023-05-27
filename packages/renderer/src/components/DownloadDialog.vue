@@ -81,6 +81,10 @@ export default defineComponent({
           endY: store.downloadData.endY,
           mapName: store.downloadData.mapName,
           mapType: store.downloadData.mapType,
+          layerMapWidth: store.downloadData.layerMapWidth,
+          layerMapHeight: store.downloadData.layerMapHeight,
+          layerStartX: store.downloadData.layerStartX,
+          layerStartY: store.downloadData.layerStartY,
         });
       }
     });

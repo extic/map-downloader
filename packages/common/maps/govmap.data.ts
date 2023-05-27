@@ -178,7 +178,7 @@ export const mapDataGovMap: MapData = {
       const bottomRightCoordinates = mapDataGovMap.coordinateProvider!!(zoomLayer, bottomRightPixelCoordinates);
       const layerCoordinates = `${topLeftCoordinates.x},${bottomRightCoordinates.y},${bottomRightCoordinates.x},${topLeftCoordinates.y}`
 
-      return `https://ags.govmap.gov.il/proxy/proxy.ashx?http://govmap/arcgis/rest/services/AdditionalData/MapServer/export?dynamicLayers=%5B%7B%22id%22%3A175%2C%22name%22%3A%22%D7%A7%D7%95%D7%95%D7%99%20%D7%92%D7%95%D7%91%D7%94%22%2C%22source%22%3A%7B%22type%22%3A%22mapLayer%22%2C%22mapLayerId%22%3A175%7D%2C%22minScale%22%3A50000%2C%22maxScale%22%3A0%7D%5D&dpi=96&transparent=true&format=png32&layers=show%3A175&bbox=${layerCoordinates}&bboxSR=2039&imageSR=2039&size=${mapWidth}%2C${mapHeight}&f=image`
+      return `https://ags.govmap.gov.il/proxy/proxy.ashx?http://govmap/arcgis/rest/services/AdditionalData/MapServer/export?dynamicLayers=%5B%7B%22id%22%3A179%2C%22name%22%3A%22%D7%A7%D7%95%D7%95%D7%99%20%D7%92%D7%95%D7%91%D7%94%22%2C%22source%22%3A%7B%22type%22%3A%22mapLayer%22%2C%22mapLayerId%22%3A179%7D%2C%22minScale%22%3A50000%2C%22maxScale%22%3A0%7D%5D&dpi=96&transparent=true&format=png32&layers=show%3A175&bbox=${layerCoordinates}&bboxSR=2039&imageSR=2039&size=${mapWidth}%2C${mapHeight}&f=image`
     };
   },
 };

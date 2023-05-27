@@ -5,6 +5,7 @@ import crypto from "crypto";
 import fetch from "electron-fetch";
 import { MapData, maps, UrlResult, UrlUsageType } from "../common/maps/map.data";
 import { DownloadData } from "../common/download";
+import { Readable } from "stream";
 
 export const downloadOptions = {
   canceled: false,
@@ -31,6 +32,8 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
   const overallImg = pimage.make(croppedWidth, croppedHeight, {});
   const overallCtx = overallImg.getContext("2d");
 
+  const headers = map.getDownloaderHeaders ? map.getDownloaderHeaders() : {};
+
   for (let y = 0; y < maxY; y++) {
     for (let x = 0; x < maxX; x++) {
       if (downloadOptions.canceled) {
@@ -46,7 +49,7 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
       const { url, unsupported } = await getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType);
       try {
         if (!unsupported) {
-          const headers = map.getDownloaderHeaders ? map.getDownloaderHeaders() : {};
+
 
           const response = await fetch(url, headers); //, { responseType: "arraybuffer" });
           const arrayBuffer = await response.arrayBuffer();
@@ -65,6 +68,7 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
               }
             }
           }
+
         }
       } catch (error) {
         // if (error instanceof AxiosError && error.response) {
@@ -77,6 +81,24 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
       }
     }
   }
+
+  const layerUrl = getLayerUrl(map, request.zoomLevel, request.layerMapWidth!, request.layerMapHeight!, request.layerStartX!, request.layerStartY!);
+  if (layerUrl) {
+    console.log(layerUrl);
+    const response = await fetch(layerUrl, headers); //, { responseType: "arraybuffer" });
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const img1 = await pimage.decodePNGFromStream(Readable.from(buffer))
+    const ctx = img1.getContext("2d");
+    let imageData = ctx.getImageData(0, 0, request.layerMapWidth!, request.layerMapHeight!);
+    for (let j = 0; j < request.layerMapHeight!; j++) {
+      for (let i = 0; i < request.layerMapWidth!; i++) {
+        overallCtx.fillPixelWithColor(i, j, imageData.getPixelRGBA(i, j));
+      }
+    }
+  }
+
+
 
   console.log(`Downloading done`);
 
@@ -95,4 +117,8 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
 
 const getTileUrl = async (map: MapData, zoomLevel: number, row: number, col: number, mapType: string): Promise<UrlResult> => {
   return await map.urlProvider(UrlUsageType.DOWNLOAD, mapType, zoomLevel, row, col);
+};
+
+const getLayerUrl = (map: MapData, zoomLevel: number, mapWidth: number, mapHeight: number, posLeft: number, posTop: number): string | undefined => {
+  return map.layerUrlProvider?.(map.zoomLayers[zoomLevel], mapWidth, mapHeight, posLeft, posTop) || undefined;
 };

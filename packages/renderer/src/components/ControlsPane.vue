@@ -10,8 +10,8 @@
             </select>
           </div>
           <div class="field spacing" v-if="selectedMap.supportLayer?.(selectedMap.zoomLayers[zoomLevel]) || false">
-            <label>Show elevation lines</label>
-            <input type="checkbox" v-model="showElevationLines"/>
+            <label>Show contour lines</label>
+            <input type="checkbox" v-model="showContourLines"/>
           </div>
         </div>
       </div>
@@ -79,12 +79,12 @@ export default defineComponent({
       },
     });
 
-    const showElevationLines = computed({
+    const showContourLines = computed({
       get(): boolean {
-        return store.showElevationLines;
+        return store.showContourLines;
       },
       set(newValue: boolean) {
-        store.setShowElevationLines(newValue);
+        store.setShowContourLines(newValue);
       },
     });
 
@@ -141,7 +141,7 @@ export default defineComponent({
       };
     });
 
-    return { store, toggleShowCrop, toggleDragMode, zoomLevel, download, donate, mapType, allMaps, selectedMap, resetCropArea, showElevationLines };
+    return { store, toggleShowCrop, toggleDragMode, zoomLevel, download, donate, mapType, allMaps, selectedMap, resetCropArea, showContourLines };
   },
 });
 </script>

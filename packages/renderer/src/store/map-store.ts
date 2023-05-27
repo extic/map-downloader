@@ -44,7 +44,7 @@ export const useMapStore = defineStore("map", {
     _appVersion: "",
     _coordinateX: 0,
     _coordinateY: 0,
-    _showElevationLines: false,
+    _showContourLines: false,
   }),
 
   getters: {
@@ -66,7 +66,7 @@ export const useMapStore = defineStore("map", {
     appVersion: (state): string => state._appVersion,
     coordinateX: (state): number => state._coordinateX,
     coordinateY: (state): number => state._coordinateY,
-    showElevationLines: (state): boolean => state._showElevationLines,
+    showContourLines: (state): boolean => state._showContourLines,
   },
 
   actions: {
@@ -152,8 +152,8 @@ export const useMapStore = defineStore("map", {
       this._coordinateY = coordinateY;
     },
 
-    setShowElevationLines(show: boolean): void {
-      this._showElevationLines = show;
+    setShowContourLines(show: boolean): void {
+      this._showContourLines = show;
     },
   },
 });

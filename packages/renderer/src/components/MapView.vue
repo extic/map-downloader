@@ -95,15 +95,15 @@ export default defineComponent({
 
       tiles.value = newTiles;
 
-      handleShowElevationLines();
+      handleShowContourLines();
     };
 
-    const handleShowElevationLines = () => {
+    const handleShowContourLines = () => {
       if (layerTimeoutHandle) {
         clearTimeout(layerTimeoutHandle);
       }
       layerTimeoutHandle = setTimeout(() => {
-        if (store.showElevationLines) {
+        if (store.showContourLines) {
           const selectedMap = store.map;
           const mapWidth = map.value!.clientWidth;
           const mapHeight = map.value!.clientHeight;
@@ -164,9 +164,9 @@ export default defineComponent({
       );
 
       watch(
-        () => [store.showElevationLines],
+        () => [store.showContourLines],
         () => {
-          handleShowElevationLines();
+          handleShowContourLines();
         }
       );
 

@@ -8,7 +8,9 @@ export const mapDataGalilTahton: MapData = {
 
   urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     const zoomLevelStr = (zoomLevel + 4).toString();
-    return { url: `https://v5.gis-net.co.il/proxy/proxy.ashx?http://10.237.72.71:8080/geoserver/gwc/service/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=Galil_tachton_2020:2020&STYLE=raster&FORMAT=image/jpeg&TILEMATRIXSET=Galil_tachton&TILEMATRIX=Galil_tachton:${zoomLevelStr}&TILEROW=${row}&TILECOL=${col}` };
+                   https://v5.gis-net.co.il/proxy/proxy.ashx?http://10.237.72.71:8080/geoserver/gwc/service/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=Galil_tachton_SHP:Galil_tachton_Reka&STYLE=raster&FORMAT=image/jpeg&TILEMATRIXSET=Galil_tachton&TILEMATRIX=Galil_tachton:8&TILEROW=110&TILECOL=128
+    debugger
+    return { url: `https://v5.gis-net.co.il/proxy/proxy.ashx?http://10.237.72.71:8080/geoserver/gwc/service/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=Galil_tachton_2023:2023&STYLE=raster&FORMAT=image/jpeg&TILEMATRIXSET=Galil_tachton&TILEMATRIX=Galil_tachton:${zoomLevelStr}&TILEROW=${row}&TILECOL=${col}` };
   },
 
   zoomLevelProvider: (zoomLevel: number): string => {

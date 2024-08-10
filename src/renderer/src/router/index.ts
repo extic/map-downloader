@@ -1,25 +1,25 @@
-import { createMemoryHistory, createRouter, RouteRecordRaw } from "vue-router";
-import MapContainer from "../views/MapContainer.vue"
+import { createMemoryHistory, createRouter, RouteRecordRaw } from 'vue-router'
+import MapContainer from '../views/map-container.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
-    redirect: "map",
+    path: '/',
+    redirect: 'map'
   },
   {
-    path: "/map",
-    name: "map",
-    component: MapContainer,
+    path: '/map',
+    name: 'map',
+    component: MapContainer
   },
   {
-    path: "/:catchAll(.*)",
-    redirect: "map"
-  },
-];
+    path: '/:catchAll(.*)',
+    redirect: 'map'
+  }
+]
 
 const router = createRouter({
   history: createMemoryHistory(),
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router

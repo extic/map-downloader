@@ -6,7 +6,7 @@ import { mapDataGovMap } from '../../common/maps/govmap.data'
 import { useMapStore } from './store/map-store'
 import draggable from './components/draggable.directive'
 import { createApp } from 'vue'
-import App from './App.vue'
+import App from './app.vue'
 
 export const pinia = createPinia()
 

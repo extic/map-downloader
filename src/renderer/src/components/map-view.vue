@@ -2,7 +2,7 @@
   <div ref="map" v-draggable="{ dragged }" class="map-view" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
       <img v-if="!tile.unsupported" :src="tile.url" referrerpolicy="origin" alt="map tile" @error="noTileImage" />
-      <img v-else src="../assets/images/unsupported.png" />
+      <img v-else src="../assets/images/unsupported.png" alt="unsupported map tile"/>
     </div>
     <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
     <div class="map-info">
@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useMapStore } from '../store/map-store'
-import CropArea from './CropArea.vue'
+import CropArea from './crop-area.vue'
 import { UrlUsageType } from '../../../common/maps/map.data'
 import { mod } from '../utils'
 
@@ -76,12 +76,11 @@ function updateMapDimensions() {
 onMounted(async () => {
   updateMapDimensions()
   store.resetCropArea()
-  // updateDownloadData()
   await updateTiles()
 
   watch(
-    () => [store.map, store.mapType],
-    ([newMap, newMapType], [oldMap, oldMapType]) => {
+    () => [store.map],
+    ([newMap], [oldMap]) => {
       if (newMap !== oldMap) {
         store.posLeft = 0
         store.posTop = 0
@@ -89,20 +88,10 @@ onMounted(async () => {
 
       if (oldMap !== newMap) {
         store.resetCropArea()
-        // updateDownloadData()
-      } else if (newMapType !== oldMapType) {
-        // updateDownloadData()
       }
       //     instance!.proxy!.$forceUpdate();
     }
   )
-  //
-  // watch(
-  //   () => [store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight, store.mapType],
-  //   () => {
-  //     updateDownloadData();
-  //   }
-  // );
 
   watch(
     () => [store.zoomLevel, store.posLeft, store.posTop, store.map, store.mapType],
@@ -122,31 +111,7 @@ function dragged(deltaX: number, deltaY: number) {
   store.posTop = store.posTop - deltaY
   store.cropLeft = store.cropLeft + deltaX
   store.cropTop = store.cropTop + deltaY
-  // updateDownloadData()
   // instance!.proxy!.$forceUpdate()
-}
-
-const updateDownloadData = () => {
-  // const zoomLayers = store.map.zoomLayers;
-  // const layer = zoomLayers[store.zoomLevel];
-  // const mapWidth = map.value!.clientWidth;
-  // const mapHeight = map.value!.clientHeight;
-  // const startX = store.cropLeft + store.posLeft - Math.floor(mapWidth / 2) + layer.centerTileOffsetX;
-  // const startY = store.cropTop + store.posTop - Math.floor(mapHeight / 2) + layer.centerTileOffsetY;
-  //
-  // store.setDownloadData({
-  //   zoomLevel: store.zoomLevel,
-  //   startCol: Math.floor(startX / 256) + layer.centerTileX,
-  //   startRow: Math.floor(startY / 256) + layer.centerTileY,
-  //   endCol: Math.floor((startX + store.cropWidth) / 256) + layer.centerTileX,
-  //   endRow: Math.floor((startY + store.cropHeight) / 256) + layer.centerTileY,
-  //   startX: mod(startX, 256),
-  //   startY: mod(startY, 256),
-  //   endX: mod(startX + store.cropWidth, 256),
-  //   endY: mod(startY + store.cropHeight, 256),
-  //   mapName: store.map.name,
-  //   mapType: store.mapType,
-  // });
 }
 
 // const instance = getCurrentInstance();

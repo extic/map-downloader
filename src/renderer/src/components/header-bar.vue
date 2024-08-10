@@ -7,14 +7,7 @@
 </template>
 
 <script setup lang="ts">
-// import { defineComponent } from "vue";
-// import ControlsPane from "./ControlsPane.vue";
-//
-// export default defineComponent({
-//   name: "HeaderBar",
-//   components: { ControlsPane },
-// });
-import ControlsPane from '../components/ControlsPane.vue'
+import ControlsPane from '../components/controls-pane.vue'
 </script>
 
 <style scoped>

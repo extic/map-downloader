@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import HeaderBar from '../components/HeaderBar.vue'
-import MapView from '../components/MapView.vue'
+import HeaderBar from '../components/header-bar.vue'
+import MapView from '../components/map-view.vue'
 </script>
 
 <style scoped>

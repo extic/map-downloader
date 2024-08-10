@@ -1,8 +1,8 @@
 <template>
-  <div ref="map" class="map-view" v-draggable="{ dragged }" @wheel="zoom($event)">
+  <div ref="map" v-draggable="{ dragged }" class="map-view" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
-      <img v-if="!tile.unsupported" :src="tile.url" referrerpolicy="origin" alt="map tile" @error="noTileImage"/>
-      <img v-else src="../assets/images/unsupported.png"/>
+      <img v-if="!tile.unsupported" :src="tile.url" referrerpolicy="origin" alt="map tile" @error="noTileImage" />
+      <img v-else src="../assets/images/unsupported.png" />
     </div>
     <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
     <div class="map-info">
@@ -19,10 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, onBeforeUpdate, onMounted, ref, watch } from "vue";
-import { useMapStore } from "../store/map-store";
-import CropArea from "./CropArea.vue";
-import { MapData, UrlUsageType } from "../../../common/maps/map.data";
+import { computed, onMounted, ref, watch } from 'vue'
+import { useMapStore } from '../store/map-store'
+import CropArea from './CropArea.vue'
+import { UrlUsageType } from '../../../common/maps/map.data'
+import { mod } from '../utils'
 
 interface TileData {
   readonly left: number
@@ -41,10 +42,6 @@ const map = ref(null as HTMLDivElement | null)
 const isCropAreaTooSmall = computed(() => {
   return store.cropWidth < 50 || store.cropHeight < 50
 })
-
-const mod = (n: number, m: number): number => {
-  return ((n % m) + m) % m;
-}
 
 async function updateTiles() {
   const zoomLayers = store.map.zoomLayers
@@ -71,15 +68,15 @@ async function updateTiles() {
 }
 
 function updateMapDimensions() {
-  const mapWidth = map.value!.clientWidth;
-  const mapHeight = map.value!.clientHeight;
-  store.setMapDimensions(mapWidth, mapHeight);
+  const mapWidth = map.value!.clientWidth
+  const mapHeight = map.value!.clientHeight
+  store.setMapDimensions(mapWidth, mapHeight)
 }
 
 onMounted(async () => {
   updateMapDimensions()
   store.resetCropArea()
-  updateDownloadData()
+  // updateDownloadData()
   await updateTiles()
 
   watch(
@@ -92,11 +89,11 @@ onMounted(async () => {
 
       if (oldMap !== newMap) {
         store.resetCropArea()
-        updateDownloadData()
+        // updateDownloadData()
       } else if (newMapType !== oldMapType) {
-        updateDownloadData()
+        // updateDownloadData()
       }
-  //     instance!.proxy!.$forceUpdate();
+      //     instance!.proxy!.$forceUpdate();
     }
   )
   //
@@ -113,10 +110,11 @@ onMounted(async () => {
       await updateTiles()
     }
   )
-  //
-  // (document.getElementsByTagName("BODY")[0] as HTMLElement).onresize = () => {
-  //   updateMapDimensions()
-  // }
+
+  const body = document.getElementsByTagName('body')[0]
+  body.onresize = () => {
+    updateMapDimensions()
+  }
 })
 
 function dragged(deltaX: number, deltaY: number) {
@@ -124,7 +122,7 @@ function dragged(deltaX: number, deltaY: number) {
   store.posTop = store.posTop - deltaY
   store.cropLeft = store.cropLeft + deltaX
   store.cropTop = store.cropTop + deltaY
-  updateDownloadData()
+  // updateDownloadData()
   // instance!.proxy!.$forceUpdate()
 }
 
@@ -133,7 +131,6 @@ const updateDownloadData = () => {
   // const layer = zoomLayers[store.zoomLevel];
   // const mapWidth = map.value!.clientWidth;
   // const mapHeight = map.value!.clientHeight;
-
   // const startX = store.cropLeft + store.posLeft - Math.floor(mapWidth / 2) + layer.centerTileOffsetX;
   // const startY = store.cropTop + store.posTop - Math.floor(mapHeight / 2) + layer.centerTileOffsetY;
   //
@@ -150,7 +147,7 @@ const updateDownloadData = () => {
   //   mapName: store.map.name,
   //   mapType: store.mapType,
   // });
-};
+}
 
 // const instance = getCurrentInstance();
 
@@ -176,7 +173,7 @@ function zoom(event: WheelEvent) {
     store.cropWidth = store.cropWidth * factor
     store.cropHeight = store.cropHeight * factor
 
-//   instance!.proxy!.$forceUpdate();
+    //   instance!.proxy!.$forceUpdate();
   }
 }
 

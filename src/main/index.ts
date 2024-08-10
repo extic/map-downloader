@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/favicon.ico?asset'
+import { eventRegistrar } from './event-registrar'
 
 function createWindow(): void {
   // Create the browser window.
@@ -19,6 +20,10 @@ function createWindow(): void {
     }
   })
 
+  if (process.env.NODE_ENV !== "production") {
+    mainWindow.webContents.openDevTools()
+  }
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -35,6 +40,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  eventRegistrar.registerEvents(mainWindow, app);
 }
 
 // This method will be called when Electron has finished
@@ -52,7 +59,8 @@ app.whenReady().then(() => {
   })
 
   // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  // ipcMain.on('ping', () => console.log('pong'))
+  // ipcMain.on('download-map', (a) => console.log(a))
 
   createWindow()
 

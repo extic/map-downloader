@@ -1,7 +1,4 @@
-// import * as pimage from "pureimage"
-// import { Bitmap } from "pureimage"
-// import { Readable } from "stream"
-import { MapData, UrlResult, UrlUsageType } from "./map.data"
+import { MapData, UrlResult, UrlUsageType } from './map.data'
 
 export const mapDataGovMap: MapData = {
   name: 'GovMap',
@@ -10,7 +7,7 @@ export const mapDataGovMap: MapData = {
     if (mapType === '1:25000' && (zoomLevel < 5 || zoomLevel > 9)) {
       return { url: '', unsupported: true }
     }
-    const zoomLevelStr = (mapType === '1:25000' ? zoomLevel - 5 : zoomLevel).toString(10).padStart(2, "0")
+    const zoomLevelStr = (mapType === '1:25000' ? zoomLevel - 5 : zoomLevel).toString(10).padStart(2, '0')
     const rowStr = row.toString(16).padStart(8, '0')
     const colStr = col.toString(16).padStart(8, '0')
     // https://cdn.govmap.gov.il/B0BZ1ORTO23/L08/R00004987/C00004114.jpg
@@ -20,7 +17,6 @@ export const mapDataGovMap: MapData = {
     const mapTypeStr = mapType === 'Satellite' ? 'B0BZ1ORTO23' : mapType === 'Street & Buildings' ? 'B0b3010BLDG' : '2024MAP25KTO'
     const suffix = mapType === 'Satellite' ? 'jpg' : 'png'
     const domain = 'cdn.govmap.gov.il'
-    console.log(`https://${domain}/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}`);
     return {
       url: `https://${domain}/${mapTypeStr}/L${zoomLevelStr}/R${rowStr}/C${colStr}.${suffix}`
     }
@@ -40,12 +36,6 @@ export const mapDataGovMap: MapData = {
     }
     return 2
   },
-
-  // decode: async (mapType: string, buffer: Buffer): Promise<Bitmap> => {
-  //   return await (mapType === 'Satellite'
-  //     ? pimage.decodeJPEGFromStream(Readable.from(buffer))
-  //     : pimage.decodePNGFromStream(Readable.from(buffer)))
-  // },
 
   supportedMapTypes: ['Satellite', 'Street & Buildings', '1:25000'],
 

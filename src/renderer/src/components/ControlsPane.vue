@@ -43,20 +43,11 @@
 </template>
 
 <script setup lang="ts">
-// import { computed, defineComponent, onMounted, watch } from "vue";
-// import { isProduction } from "../utils";
-// import { openDownloadDialog } from "./DownloadDialog.vue";
-// import { useMapStore } from "../store/map-store";
-// import { MapData, maps } from "../../../common/maps/map.data";
-// import { ipcRenderer } from "electron";
-//
-// export default defineComponent({
-//   name: "ControlsPane",
-//
-//   setup() {
-import { useMapStore } from "../store/map-store"
-import { MapData, maps } from "../../../common/maps/map.data"
-import { onMounted } from "vue"
+import { useMapStore } from '../store/map-store'
+import { maps } from '../../../common/maps/map.data'
+import { onMounted } from 'vue'
+import { useDialog } from './dialog/use-dialog'
+import DownloadDialog from './dialog/download-dialog.vue'
 
 const store = useMapStore()
 
@@ -84,9 +75,34 @@ function toggleDragMode() {
   store.dragMode = store.dragMode === 'map' ? 'crop' : 'map'
 }
 
+const dialog = useDialog();
+
 function download() {
-  // openDownloadDialog();
+  // const zoomLayers = store.map.zoomLayers;
+  // const layer = zoomLayers[store.zoomLevel];
+  // const mapWidth = !map.value!.clientWidth;
+  // const mapHeight = map.value!.clientHeight;
+  //
+  // const startX = store.cropLeft + store.posLeft - Math.floor(mapWidth / 2) + layer.centerTileOffsetX;
+  // const startY = store.cropTop + store.posTop - Math.floor(mapHeight / 2) + layer.centerTileOffsetY;
+  //
+  // store.setDownloadData({
+  //   zoomLevel: store.zoomLevel,
+  //   startCol: Math.floor(startX / 256) + layer.centerTileX,
+  //   startRow: Math.floor(startY / 256) + layer.centerTileY,
+  //   endCol: Math.floor((startX + store.cropWidth) / 256) + layer.centerTileX,
+  //   endRow: Math.floor((startY + store.cropHeight) / 256) + layer.centerTileY,
+  //   startX: mod(startX, 256),
+  //   startY: mod(startY, 256),
+  //   endX: mod(startX + store.cropWidth, 256),
+  //   endY: mod(startY + store.cropHeight, 256),
+  //   mapName: store.map.name,
+  //   mapType: store.mapType,
+  // });
+
+  dialog.show(DownloadDialog, { mapWidth: store.mapWidth, mapHeight: store.mapHeight })
 }
+
 
 function donate() {
   window.open(

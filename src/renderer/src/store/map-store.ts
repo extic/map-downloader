@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { MapData, maps } from '../../../common/maps/map.data'
 import { DownloadData } from '../../../common/download'
-import { ref } from "vue";
+import { ref } from 'vue'
 
 export type DragMode = 'map' | 'crop'
 
@@ -34,7 +34,7 @@ export const useMapStore = defineStore('map', () => {
   const downloadData = ref<DownloadData>(resetDownloadData())
   const mapWidth = ref(0)
   const mapHeight = ref(0)
-  const tooLarge = ref(false)
+  // const tooLarge = ref(false)
   const appVersion = ref('')
 
   function setMap(mapData: MapData): void {
@@ -88,7 +88,7 @@ export const useMapStore = defineStore('map', () => {
     downloadData,
     mapWidth,
     mapHeight,
-    tooLarge,
+    // tooLarge,
     appVersion,
     setMap,
     setMapDimensions,

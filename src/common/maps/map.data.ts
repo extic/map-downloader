@@ -1,11 +1,4 @@
-// import { Bitmap } from "pureimage"
-import { mapDataTelAviv } from './tel-aviv.data'
-import { mapDataGalilTahton } from './galil-tahton.data'
-import { mapDataHaifa } from './haifa.data'
 import { mapDataGovMap } from './govmap.data'
-import { mapDataHodHasharon } from './hod-hasharon.data'
-import { mapDataMapy } from './mapy.data'
-import { mapDataNetanya } from './netanya.data'
 
 export type ZoomLayer = {
   readonly scale: number
@@ -27,17 +20,10 @@ export type UrlResult = {
 
 export type MapData = {
   name: string
-  urlProvider: (
-    usageType: UrlUsageType,
-    mapType: string,
-    zoomLevel: number,
-    row: number,
-    col: number
-  ) => Promise<UrlResult>
+  urlProvider: (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number) => Promise<UrlResult>
   getDownloaderHeaders?: () => any
   zoomLevelProvider: (zoomLevel: number) => string
   zoomFactorProvider: (zoomLevel: number, zoomIn: boolean) => number
-  // decode: (mapType: string, buffer: Buffer) => Promise<Bitmap>
   supportedMapTypes: string[]
   showScale: boolean
   referer: string | undefined

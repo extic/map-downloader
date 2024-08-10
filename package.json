@@ -24,6 +24,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "electron-fetch": "^1.9.1",
     "electron-updater": "^6.1.7",
     "pinia": "^2.2.0",
     "pureimage": "^0.4.13",

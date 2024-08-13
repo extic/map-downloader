@@ -4,6 +4,7 @@ import { mapDataHaifa } from './haifa.data'
 import { mapDataNetanya } from './netanya.data'
 import { mapDataGalilTahton } from './galil-tahton.data'
 import { mapDataHodHasharon } from './hod-hasharon.data'
+import { mapDataMapy } from './mapy.data'
 
 export type ZoomLayer = {
   readonly scale: number
@@ -42,5 +43,5 @@ export const maps = [
   mapDataHaifa,
   mapDataHodHasharon,
   mapDataNetanya,
-  // mapDataMapy
+  mapDataMapy
 ]

@@ -5,6 +5,7 @@ import { mapBackendDataHaifa } from './haifa.backend'
 import { mapBackendDataNetanya } from './netanya.backend'
 import { mapBackendHodHasharon } from './hod-hasharon.backend'
 import { mapBackendGalilTahton } from './galil-tahton.backend'
+import { mapBackendMapy } from './mapy.backend'
 
 export type MapBackendData = {
   name: string
@@ -17,8 +18,8 @@ const mapBackend = [
   mapBackendTelAviv,
   mapBackendDataHaifa,
   mapBackendHodHasharon,
-  mapBackendDataNetanya
-  // mapDataMapy
+  mapBackendDataNetanya,
+  mapBackendMapy
 ]
 
 export function getBackendData(mapName: string) {

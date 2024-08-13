@@ -3,6 +3,8 @@ import { Bitmap } from 'pureimage'
 import { mapBackendTelAviv } from './tel-aviv.backend'
 import { mapBackendDataHaifa } from './haifa.backend'
 import { mapBackendDataNetanya } from './netanya.backend'
+import { mapBackendHodHasharon } from './hod-hasharon.backend'
+import { mapBackendGalilTahton } from './galil-tahton.backend'
 
 export type MapBackendData = {
   name: string
@@ -11,10 +13,10 @@ export type MapBackendData = {
 
 const mapBackend = [
   mapBackendDataGovMap,
-  // mapDataGalilTahton,
+  mapBackendGalilTahton,
   mapBackendTelAviv,
   mapBackendDataHaifa,
-  // mapDataHodHasharon,
+  mapBackendHodHasharon,
   mapBackendDataNetanya
   // mapDataMapy
 ]

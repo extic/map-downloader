@@ -45,9 +45,8 @@ function progressValue() {
 }
 
 function cancel() {
-  // <template #footer>
-  // <button @click="base!.closeDialog">Close</button>
-  //   </template>
+  window.electron.ipcRenderer.send('cancel-download', {})
+  base.value!.closeDialog()
 }
 
 function onDownloadProgress(_: any, downloadProgress: number) {

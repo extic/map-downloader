@@ -46,9 +46,12 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
       const { url, unsupported } = await getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType)
       try {
         if (!unsupported) {
-          const headers = map.getDownloaderHeaders ? map.getDownloaderHeaders() : {}
+          const headers = map.getDownloaderHeaders ?? {}
+          if (map.referer) {
+            headers['Referer'] = map.referer
+          }
 
-          const response = await fetch(url, headers) //, { responseType: "arraybuffer" });
+          const response = await fetch(url, { headers }) //, { responseType: "arraybuffer" });
           const arrayBuffer = await response.arrayBuffer()
           const buffer = Buffer.from(arrayBuffer)
           const img1 = await backendData.decode(request.mapType, buffer)

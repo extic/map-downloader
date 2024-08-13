@@ -3,7 +3,7 @@
     <div class="left-pane">
       <div class="field">
         <label>Source:</label>
-        <select v-model="store.map">
+        <select v-model="selectedMap">
           <option v-for="map in maps" :key="map.name" :value="map">{{ map.name }}</option>
         </select>
       </div>
@@ -44,8 +44,8 @@
 
 <script setup lang="ts">
 import { useMapStore } from '../store/map-store'
-import { maps } from '../../../common/maps/map.data'
-import { onMounted } from 'vue'
+import { MapData, maps } from '../../../common/maps/map.data'
+import { computed, onMounted } from 'vue'
 import { useDialog } from './dialog/use-dialog'
 import DownloadDialog from './dialog/download-dialog.vue'
 import { isProduction } from '../utils'
@@ -53,17 +53,16 @@ import { isProduction } from '../utils'
 const store = useMapStore()
 const dialog = useDialog()
 
-//
-// const selectedMap = computed({
-//   get(): MapData {
-//     return store.map;
-//   },
-//   set(newValue: MapData) {
-//     store.setMap(newValue);
-//
-//     // ipcRenderer.send("set-referer", newValue.referer);
-//   },
-// });
+const selectedMap = computed({
+  get(): MapData {
+    return store.map
+  },
+  set(newValue: MapData) {
+    store.setMap(newValue)
+
+    window.electron.ipcRenderer.send('set-referer', newValue.referer)
+  }
+})
 
 function toggleShowCrop() {
   store.showCrop = !store.showCrop

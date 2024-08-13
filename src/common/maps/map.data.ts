@@ -1,4 +1,7 @@
 import { mapDataGovMap } from './govmap.data'
+import { mapDataTelAviv } from './tel-aviv.data'
+import { mapDataHaifa } from './haifa.data'
+import { mapDataNetanya } from './netanya.data'
 
 export type ZoomLayer = {
   readonly scale: number
@@ -33,9 +36,9 @@ export type MapData = {
 export const maps = [
   mapDataGovMap,
   // mapDataGalilTahton,
-  // mapDataTelAviv,
-  // mapDataHaifa,
+  mapDataTelAviv,
+  mapDataHaifa,
   // mapDataHodHasharon,
-  // mapDataNetanya,
+  mapDataNetanya,
   // mapDataMapy
 ]

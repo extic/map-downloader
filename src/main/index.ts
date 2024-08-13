@@ -1,8 +1,9 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, session, shell } from 'electron'
 import { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/favicon.ico?asset'
 import { eventRegistrar } from './event-registrar'
+import { getReferrer } from './main-store'
 
 function createWindow(): void {
   // Create the browser window.
@@ -20,7 +21,7 @@ function createWindow(): void {
     }
   })
 
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     mainWindow.webContents.openDevTools()
   }
 
@@ -41,7 +42,15 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  eventRegistrar.registerEvents(mainWindow, app);
+  const filter = {
+    urls: []
+  }
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    details.requestHeaders['Referer'] = getReferrer() ?? ''
+    callback({ cancel: false, requestHeaders: details.requestHeaders })
+  })
+
+  eventRegistrar.registerEvents(mainWindow, app)
 }
 
 // This method will be called when Electron has finished

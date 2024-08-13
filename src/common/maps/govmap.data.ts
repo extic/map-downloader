@@ -3,18 +3,15 @@ import { MapData, UrlResult, UrlUsageType } from './map.data'
 export const mapDataGovMap: MapData = {
   name: 'GovMap',
 
-  urlProvider: async (usageType: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
+  urlProvider: async (_: UrlUsageType, mapType: string, zoomLevel: number, row: number, col: number): Promise<UrlResult> => {
     if (mapType === '1:25000' && (zoomLevel < 5 || zoomLevel > 9)) {
       return { url: '', unsupported: true }
     }
     const zoomLevelStr = (mapType === '1:25000' ? zoomLevel - 5 : zoomLevel).toString(10).padStart(2, '0')
     const rowStr = row.toString(16).padStart(8, '0')
     const colStr = col.toString(16).padStart(8, '0')
-    // https://cdn.govmap.gov.il/B0BZ1ORTO23/L08/R00004987/C00004114.jpg
-    // https://cdn.govmap.gov.il/B0b3010BLDG/L08/R00004986/C00004117.png
-    // https://cdn.govmap.gov.il/2024MAP25KTO/L03/R00004984/C00004115.png
 
-    const mapTypeStr = mapType === 'Satellite' ? 'B0BZ1ORTO23' : mapType === 'Street & Buildings' ? 'B0b3010BLDG' : '2024MAP25KTO'
+    const mapTypeStr = mapType === 'Satellite' ? 'B0BZ1ORTO23' : mapType === 'Street & Buildings' ? 'B0B0MARS27052024' : '2024MAP25KTO'
     const suffix = mapType === 'Satellite' ? 'jpg' : 'png'
     const domain = 'cdn.govmap.gov.il'
     return {

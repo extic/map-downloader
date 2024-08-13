@@ -2,7 +2,7 @@
   <div ref="map" v-draggable="{ dragged }" class="map-view" @wheel="zoom($event)">
     <div v-for="tile in tiles" :key="tile.top * 100000 + tile.left" :style="{ left: tile.left + 'px', top: tile.top + 'px' }" class="tile">
       <img v-if="!tile.unsupported" :src="tile.url" referrerpolicy="origin" alt="map tile" @error="noTileImage" />
-      <img v-else src="../assets/images/unsupported.png" alt="unsupported map tile"/>
+      <img v-else src="../assets/images/unsupported.png" alt="unsupported map tile" />
     </div>
     <crop-area v-if="store.showCrop && !isCropAreaTooSmall" />
     <div class="map-info">

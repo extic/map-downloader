@@ -2,7 +2,7 @@
   <router-view />
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useMapStore } from './store/map-store'
 
 window.electron.ipcRenderer.on('app-version', (_event, version) => {

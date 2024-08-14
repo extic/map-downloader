@@ -1,11 +1,6 @@
 node_modules
-.DS_Store
 dist
-dist-ssr
-*.local
-.debug.env
+out
+.DS_Store
+*.log*
 map-*.png
-
-tmp
-**/.tmp
-release

@@ -1,35 +1,20 @@
+/* eslint-env node */
+require('@rushstack/eslint-patch/modern-module-resolution')
+
 module.exports = {
-  root: true,
-  env: {
-    node: true,
-  },
-  parser: "vue-eslint-parser",
-  parserOptions: {
-    parser: "@typescript-eslint/parser",
-    ecmaVersion: 2020,
-    sourceType: "module",
-  },
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:vue/vue3-recommended",
-    "@vue/prettier",
-    "plugin:prettier/recommended",
+    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    '@electron-toolkit',
+    '@electron-toolkit/eslint-config-ts/eslint-recommended',
+    '@vue/eslint-config-typescript/recommended',
+    '@vue/eslint-config-prettier'
   ],
-  plugins: ["vue", "@typescript-eslint", "prettier"],
-  settings: {
-    "import/resolver": {
-      alias: {
-        extensions: [".vue", ".ts", ".tsx", ".js", ".jsx"],
-        map: [["@/", ".src/"]],
-      },
-    },
-  },
   rules: {
-    "no-unused-vars": "off",
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "vue/max-attributes-per-line": "off",
-    "max-len": ["error", { code: 150 }],
-  },
-};
+    'vue/require-default-prop': 'off',
+    'vue/multi-word-component-names': 'off',
+    'vue/attribute-order': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': 'off'
+  }
+}

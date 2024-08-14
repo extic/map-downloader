@@ -13,12 +13,11 @@ This standalone portable application allows downloading maps from various source
 3. Show and resize the cropping area (use the control key to toggle between dragging the map or the crop area)
 4. Download your map.
 
-
-![screenshot.gif](https://github.com/extic/map-downloader/blob/main/packages/renderer/public/screenshot.gif?raw=true)
+![screenshot.gif](https://github.com/extic/map-downloader/blob/main/src/renderer/public/screenshot.gif?raw=true)
 
 ## Donate
 
-If you like this application, I would very much appriciate your donation as it gives me the will to continue and improve it. Thank you!
+If you like this application, I would very much appreciate your donation as it gives me the will to continue and improve it. Thank you!
 
 ## List of map sources
 - GovMap - https://www.govmap.gov.il

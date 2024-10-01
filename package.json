@@ -29,7 +29,7 @@
     "pinia": "^2.2.0",
     "pureimage": "^0.4.13",
     "util": "^0.10.0",
-    "vue-router": "^4.4.2"
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.2",

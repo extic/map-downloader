@@ -37,7 +37,7 @@
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@playwright/test": "^1.22.2",
     "@rushstack/eslint-patch": "^1.10.3",
-    "@types/node": "^20.14.8",
+    "@types/node": "^22.7.4",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vue/eslint-config-prettier": "^9.0.0",

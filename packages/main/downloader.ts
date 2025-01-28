@@ -16,8 +16,6 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
     return;
   }
 
-  console.log(request);
-
   downloadOptions.canceled = false;
 
   const maxX = request.endCol - request.startCol + 1;
@@ -42,33 +40,30 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
       }
 
       const progress = (x + y * maxX) / (maxX * maxY);
-      win.webContents.send("download-progress", progress);
+      win.webContents.send("download-progress", progress, "Downloading Map...");
 
       console.log(`Downloading images: ${(progress * 100).toFixed(2)}%, x=${x}/${maxX}, y=${y}/${maxY}`);
 
       const { url, unsupported } = await getTileUrl(map, request.zoomLevel, request.startRow + y, request.startCol + x, request.mapType);
       try {
         if (!unsupported) {
-
-
-          const response = await fetch(url, headers); //, { responseType: "arraybuffer" });
-          const arrayBuffer = await response.arrayBuffer();
-          const buffer = Buffer.from(arrayBuffer);
-          const img1 = await map.decode(request.mapType, buffer);
-          const ctx = img1.getContext("2d");
-          let imageData = ctx.getImageData(0, 0, 256, 256);
-          for (let j = 0; j < 256; j++) {
-            const posY = j + y * 256 - request.startY;
-            if (posY >= 0) {
-              for (let i = 0; i < 256; i++) {
-                const posX = i + x * 256 - request.startX;
-                if (posX >= 0) {
-                  overallCtx.fillPixelWithColor(posX, posY, imageData.getPixelRGBA(i, j));
-                }
-              }
-            }
-          }
-
+          // const response = await fetch(url, headers); //, { responseType: "arraybuffer" });
+          // const arrayBuffer = await response.arrayBuffer();
+          // const buffer = Buffer.from(arrayBuffer);
+          // const img1 = await map.decode(request.mapType, buffer);
+          // const ctx = img1.getContext("2d");
+          // let imageData = ctx.getImageData(0, 0, 256, 256);
+          // for (let j = 0; j < 256; j++) {
+          //   const posY = j + y * 256 - request.startY;
+          //   if (posY >= 0) {
+          //     for (let i = 0; i < 256; i++) {
+          //       const posX = i + x * 256 - request.startX;
+          //       if (posX >= 0) {
+          //         overallCtx.fillPixelWithColor(posX, posY, imageData.getPixelRGBA(i, j));
+          //       }
+          //     }
+          //   }
+          // }
         }
       } catch (error) {
         // if (error instanceof AxiosError && error.response) {
@@ -82,20 +77,61 @@ export const downloadMap = async (win: BrowserWindow, request: DownloadData) => 
     }
   }
 
-  const layerUrl = getLayerUrl(map, request.zoomLevel, request.layerMapWidth!, request.layerMapHeight!, request.layerStartX!, request.layerStartY!);
-  if (layerUrl) {
-    console.log(layerUrl);
-    const response = await fetch(layerUrl, headers); //, { responseType: "arraybuffer" });
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const img1 = await pimage.decodePNGFromStream(Readable.from(buffer))
-    const ctx = img1.getContext("2d");
-    let imageData = ctx.getImageData(0, 0, request.layerMapWidth!, request.layerMapHeight!);
-    for (let j = 0; j < request.layerMapHeight!; j++) {
-      for (let i = 0; i < request.layerMapWidth!; i++) {
-        overallCtx.fillPixelWithColor(i, j, imageData.getPixelRGBA(i, j));
+
+  const chunkSize = 2048;
+  if (request.cropWidth !== undefined && request.cropHeight !== undefined) {
+    const maxX = Math.floor(request.cropWidth / chunkSize) + 1;
+    const maxY = Math.floor(request.cropHeight / chunkSize) + 1;
+    console.log(request, maxX, maxY);
+    for (let y = 0; y < maxY; y++) {
+      for (let x = 0; x < maxX; x++) {
+        console.log("x=", x, "y=", y, Math.floor(request.cropWidth / chunkSize) + 1, Math.floor(request.cropHeight / chunkSize) + 1);
+        const chunkWidth = Math.min(chunkSize, request.cropWidth - x * chunkSize);
+        const chunkHeight = Math.min(chunkSize, request.cropHeight - y * chunkSize);
+
+        // const layerStartX = request.posLeft - chunkWidth / 2 + request.cropWidth / 2 + request.cropLeft!;
+        // const layerStartY = request.posTop - chunkHeight / 2 + request.cropHeight / 2 + request.cropTop!;
+        const layerStartX = request.posLeft + request.cropWidth / 2 + request.cropLeft!;
+        const layerStartY = request.posTop + request.cropHeight / 2 + request.cropTop!;
+
+        // layerStartX: store.posLeft - mapWidth / 2 + store.cropWidth / 2 + store.cropLeft,
+        // layerStartY: store.posTop - mapHeight / 2 + store.cropHeight / 2 + store.cropTop,
+        const layerUrl = getLayerUrl(map, request.zoomLevel, chunkWidth, chunkHeight, layerStartX! + x * chunkSize, layerStartY! + y * chunkSize);
+
+        const progress = (x + y * maxX) / (maxX * maxY);
+        console.log(progress, x, y, maxX, maxY, chunkWidth, chunkHeight);
+        win.webContents.send("download-progress", progress, "Downloading Contour Lines...");
+        console.log(layerUrl);
+        if (layerUrl) {
+          const response = await fetch(layerUrl, headers); //, { responseType: "arraybuffer" });
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const img1 = await pimage.decodePNGFromStream(Readable.from(buffer))
+          const ctx = img1.getContext("2d");
+          let imageData = ctx.getImageData(0, 0, chunkWidth, chunkHeight);
+          for (let j = 0; j < chunkHeight; j++) {
+            for (let i = 0; i < chunkWidth; i++) {
+              overallCtx.fillPixelWithColor(x * chunkSize + i, y * chunkSize + j, imageData.getPixelRGBA(i, j));
+            }
+          }
+        }
       }
     }
+
+    // const layerUrl = getLayerUrl(map, request.zoomLevel, request.layerMapWidth!, request.layerMapHeight!, request.layerStartX!, request.layerStartY!);
+    // if (layerUrl) {
+    //   const response = await fetch(layerUrl, headers); //, { responseType: "arraybuffer" });
+    //   const arrayBuffer = await response.arrayBuffer();
+    //   const buffer = Buffer.from(arrayBuffer);
+    //   const img1 = await pimage.decodePNGFromStream(Readable.from(buffer))
+    //   const ctx = img1.getContext("2d");
+    //   let imageData = ctx.getImageData(0, 0, request.layerMapWidth!, request.layerMapHeight!);
+    //   for (let j = 0; j < request.layerMapHeight!; j++) {
+    //     for (let i = 0; i < request.layerMapWidth!; i++) {
+    //       overallCtx.fillPixelWithColor(i, j, imageData.getPixelRGBA(i, j));
+    //     }
+    //   }
+    // }
   }
 
 

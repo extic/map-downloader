@@ -193,6 +193,8 @@ export default defineComponent({
       const startX = store.cropLeft + store.posLeft - Math.floor(mapWidth / 2) + layer.centerTileOffsetX;
       const startY = store.cropTop + store.posTop - Math.floor(mapHeight / 2) + layer.centerTileOffsetY;
 
+      console.log("aaaaaaaaaaaaaaaaaaa", mapWidth, mapHeight);
+
       store.setDownloadData({
         zoomLevel: store.zoomLevel,
         startCol: Math.floor(startX / 256) + layer.centerTileX,
@@ -205,10 +207,12 @@ export default defineComponent({
         endY: mod(startY + store.cropHeight, 256),
         mapName: store.map.name,
         mapType: store.mapType,
-        layerMapWidth: store.cropWidth,
-        layerMapHeight: store.cropHeight,
-        layerStartX: store.posLeft - mapWidth / 2 + store.cropWidth / 2 + store.cropLeft,
-        layerStartY: store.posTop - mapHeight / 2 + store.cropHeight / 2 + store.cropTop,
+        posLeft: store.posLeft,
+        posTop: store.posTop,
+        cropLeft: store.cropLeft - mapWidth / 2,
+        cropTop: store.cropTop - mapHeight / 2,
+        cropWidth: store.cropWidth,
+        cropHeight: store.cropHeight,
       });
 
       console.log(store.cropLeft, store.cropTop, store.cropWidth, store.cropHeight);

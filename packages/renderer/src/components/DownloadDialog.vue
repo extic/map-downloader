@@ -7,7 +7,7 @@
       <div class="donate-dialog-content">
         <div class="dialog-content">
           <div v-if="!error">
-            <div>Progress</div>
+            <div>{{ description }}</div>
             <div class="progress-bar-container">
               <div class="progress-bar" :style="{ width: progress * 100 + '%' }"></div>
               <div class="progress-value">{{ progressValue() }}%</div>
@@ -39,6 +39,7 @@ export default defineComponent({
 
   setup() {
     const store = useMapStore();
+    const description = ref("");
     const progress = ref(0);
     const genericDialog = ref("genericDialog");
     const error = ref(null as string | null);
@@ -51,8 +52,9 @@ export default defineComponent({
       return (progress.value * 100).toFixed(2);
     };
 
-    ipcRenderer.on("download-progress", (event, downloadProgress: number) => {
+    ipcRenderer.on("download-progress", (event, downloadProgress: number, desc: string) => {
       progress.value = downloadProgress;
+      description.value = desc;
     });
 
     ipcRenderer.on("download-done", (event, result: boolean) => {
@@ -81,15 +83,17 @@ export default defineComponent({
           endY: store.downloadData.endY,
           mapName: store.downloadData.mapName,
           mapType: store.downloadData.mapType,
-          layerMapWidth: store.downloadData.layerMapWidth,
-          layerMapHeight: store.downloadData.layerMapHeight,
-          layerStartX: store.downloadData.layerStartX,
-          layerStartY: store.downloadData.layerStartY,
+          posLeft: store.downloadData.posLeft,
+          posTop: store.downloadData.posTop,
+          cropLeft: store.downloadData.cropLeft,
+          cropTop: store.downloadData.cropTop,
+          cropWidth: store.downloadData.cropWidth,
+          cropHeight: store.downloadData.cropHeight,
         });
       }
     });
 
-    return { progress, dialogAppeared, progressValue, genericDialog, error, store };
+    return { progress, dialogAppeared, progressValue, genericDialog, error, store, description };
   },
 
   methods: {

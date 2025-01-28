@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { MapData, maps } from "../../../common/maps/map.data";
 import { DownloadData } from "../../../common/download";
-import { string } from "yargs";
 
 export type DragMode = 'map' | 'crop'
 
@@ -17,10 +16,12 @@ const resetDownloadData = (): DownloadData => ({
   endY: 0,
   mapName: '',
   mapType: '',
-  layerMapWidth: undefined,
-  layerMapHeight: undefined,
-  layerStartX: undefined,
-  layerStartY: undefined,
+  posLeft: 0,
+  posTop: 0,
+  cropLeft: undefined,
+  cropTop: undefined,
+  cropWidth: undefined,
+  cropHeight: undefined,
 });
 
 
@@ -92,10 +93,12 @@ export const useMapStore = defineStore("map", {
 
     setPosLeft(posLeft: number): void {
       this._posLeft = posLeft;
+      console.log("posLeft", posLeft);
     },
 
     setPosTop(posTop: number): void {
       this._posTop = posTop;
+      console.log("posTop", posTop);
     },
 
     setShowCrop(showCrop: boolean): void {

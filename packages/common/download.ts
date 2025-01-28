@@ -10,8 +10,10 @@ export type DownloadData = {
   endCol: number;
   mapName: string;
   mapType: string;
-  layerMapWidth?: number;
-  layerMapHeight?: number;
-  layerStartX?: number;
-  layerStartY?: number;
+  posLeft: number,
+  posTop: number,
+  cropLeft?: number,
+  cropTop?: number,
+  cropWidth?: number;
+  cropHeight?: number;
 };
